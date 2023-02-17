@@ -1,15 +1,17 @@
 #!/bin/bash
 
-#$ -l h_rt=8:0:0
+#!/bin/bash
 
-#$ -l rmem=32G
+#$ -l h_rt=4:0:0
 
-#$ -pe smp 8
+#$ -l rmem=16G
+
+#$ -pe smp 4
 
 #$ -P ressexcon
 #$ -q ressexcon.q
 
-#$ -wd /fastdata/bop20pp/scRNAseq/cellranger/wdir
+#$ -wd /fastdata/bop20pp/Avian_scRNAseq/wdir
 
 name=$1
 rn1='-'
@@ -18,6 +20,7 @@ id=${id%'/'}
 echo $id
 
 ~/software/cellranger-7.0.1/cellranger count --id=$id \
-	--fastqs=${2} \
-	--transcriptome=${3}
+	--fastqs=${1}/ \
+	--transcriptome=${2}
 
+cp $id /fastdata/bop20pp/Avian_scRNAseq/cellranger

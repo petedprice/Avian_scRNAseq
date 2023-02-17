@@ -16,11 +16,14 @@ rsync -t -v rsync://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summa
 grep -E $1 assembly_summary_refseq.txt | cut -f 20 > ftp_links.txt
 awk 'BEGIN{FS=OFS="/";filesuffix="genomic.fna.gz"}{ftpdir=$0;asm=$10;file=asm"_"filesuffix;print "rsync -t -v "ftpdir,file" ./"}' ftp_links.txt | sed 's/https/rsync/g' > download_fna_files.sh
 awk 'BEGIN{FS=OFS="/";filesuffix="genomic.gff.gz"}{ftpdir=$0;asm=$10;file=asm"_"filesuffix;print "rsync -t -v "ftpdir,file" ./"}' ftp_links.txt | sed 's/https/rsync/g' > download_gff_files.sh
+awk 'BEGIN{FS=OFS="/";filesuffix="genomic.gtf.gz"}{ftpdir=$0;asm=$10;file=asm"_"filesuffix;print "rsync -t -v "ftpdir,file" ./"}' ftp_links.txt | sed 's/https/rsync/g' > download_gtf_files.sh
 source download_fna_files.sh
 source download_gff_files.sh
+source download_gtf_files.sh
+gunzip *.gz
 
-mv *fna* /fastdata/bop20pp/Avian_scRNAseq/ref_files
-mv *gff* /fastdata/bop20pp/Avian_scRNAseq/ref_files
-
+mv *fna /fastdata/bop20pp/Avian_scRNAseq/ref_files
+mv *gff /fastdata/bop20pp/Avian_scRNAseq/ref_files
+mv *gtf /fastdata/bop20pp/Avian_scRNAseq/ref_files
 
 

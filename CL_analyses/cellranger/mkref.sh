@@ -11,13 +11,10 @@
 
 #$ -wd /fastdata/bop20pp/Avian_scRNAseq/wdir
 
-gunzip $1
-gunzip $2
-
 ~/software/cellranger-7.0.1/cellranger mkref \
 	--genome=${3} \
 	--fasta=${1} \
 	--genes=${2}
 
-mv $3* /fastdata/bop20pp/Avian_scRNAseq/ref_files/cellranger
+mv $3 /fastdata/bop20pp/Avian_scRNAseq/ref_files/cellranger
 
