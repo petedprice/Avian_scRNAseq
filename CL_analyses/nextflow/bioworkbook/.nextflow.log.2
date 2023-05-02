@@ -1,0 +1,51 @@
+May-02 14:48:46.515 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf --fasta /fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.fna --gtf /fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.gtf --cellranger /home/bop20pp/software/cellranger-7.0.1/cellranger
+May-02 14:48:46.845 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 21.04.3
+May-02 14:48:46.896 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [adoring_cantor] - revision: f558001e09
+May-02 14:48:46.933 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/nextflow.config
+May-02 14:48:46.934 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/nextflow.config
+May-02 14:48:47.005 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+May-02 14:48:48.881 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/home/bop20pp/.nextflow/plugins
+May-02 14:48:48.883 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-02 14:48:48.885 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins local root: .nextflow/plr/empty
+May-02 14:48:48.905 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-02 14:48:48.906 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-02 14:48:48.911 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+May-02 14:48:48.947 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-02 14:48:49.060 [main] DEBUG nextflow.Session - Session uuid: 01e61ca6-0f07-4cdd-8167-23c20761b642
+May-02 14:48:49.061 [main] DEBUG nextflow.Session - Run name: adoring_cantor
+May-02 14:48:49.061 [main] DEBUG nextflow.Session - Executor pool size: 2
+May-02 14:48:49.098 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 21.04.3 build 5560
+  Created: 21-07-2021 15:09 UTC (16:09 BST)
+  System: Linux 3.10.0-1160.88.1.el7.x86_64
+  Runtime: Groovy 3.0.7 on Java HotSpot(TM) 64-Bit Server VM 1.8.0_151-b12
+  Encoding: UTF-8 (UTF-8)
+  Process: 8891@sharc-node013.shef.ac.uk [172.30.64.113]
+  CPUs: 1 - Mem: 62.7 GB (44 GB) - Swap: 16 GB (16 GB)
+May-02 14:48:49.155 [main] DEBUG nextflow.Session - Work-dir: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/work [nfs]
+May-02 14:48:49.156 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/bin
+May-02 14:48:49.171 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-02 14:48:49.210 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-02 14:48:49.507 [main] DEBUG nextflow.Session - Session start invoked
+May-02 14:48:49.994 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-02 14:48:50.009 [main] DEBUG nextflow.Session - Workflow process names [dsl1]: cellranger_mkref, cellranger_count
+May-02 14:48:50.173 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-02 14:48:50.173 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-02 14:48:50.194 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+May-02 14:48:50.200 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=1; memory=62.7 GB; capacity=1; pollInterval=100ms; dumpInterval=5m
+May-02 14:48:50.562 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-02 14:48:50.562 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-02 14:48:50.573 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+May-02 14:48:50.573 [main] DEBUG nextflow.Session - Session await
+May-02 14:48:50.953 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-02 14:48:50.965 [Task submitter] INFO  nextflow.Session - [8b/785b62] Submitted process > cellranger_count
+May-02 14:48:51.272 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: cellranger_count; status: COMPLETED; exit: 0; error: -; workDir: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/work/8b/785b6296dd2cdd45ee82f82523a9e4]
+May-02 14:48:51.283 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-02 14:48:51.306 [Task submitter] INFO  nextflow.Session - [f6/3e4321] Submitted process > cellranger_mkref
+May-02 14:48:56.389 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+May-02 14:48:56.490 [main] DEBUG nextflow.Session - Session await > all process finished
+May-02 14:48:56.490 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-02 14:48:56.499 [main] WARN  n.processor.TaskPollingMonitor - Killing pending tasks (1)
+May-02 14:48:56.647 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=1; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=1; retriesCount=0; abortedCount=0; succeedDuration=205ms; failedDuration=0ms; cachedDuration=0ms;loadCpus=1; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=0; ]
+May-02 14:48:56.666 [main] DEBUG nextflow.CacheDB - Closing CacheDB done
+May-02 14:48:56.713 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

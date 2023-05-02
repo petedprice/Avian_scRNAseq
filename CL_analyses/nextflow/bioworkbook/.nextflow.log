@@ -1,0 +1,96 @@
+May-02 14:50:24.793 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf --fasta /fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.fna --gtf /fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.gtf --cellranger /home/bop20pp/software/cellranger-7.0.1/cellranger
+May-02 14:50:25.129 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 21.04.3
+May-02 14:50:25.180 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [hungry_yonath] - revision: 1f9114f279
+May-02 14:50:25.219 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/nextflow.config
+May-02 14:50:25.220 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/nextflow.config
+May-02 14:50:25.287 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+May-02 14:50:27.325 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/home/bop20pp/.nextflow/plugins
+May-02 14:50:27.338 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-02 14:50:27.340 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins local root: .nextflow/plr/empty
+May-02 14:50:27.367 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-02 14:50:27.369 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-02 14:50:27.387 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+May-02 14:50:27.410 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-02 14:50:27.507 [main] DEBUG nextflow.Session - Session uuid: 04fede06-6cef-424e-84e3-adfb34ff6160
+May-02 14:50:27.507 [main] DEBUG nextflow.Session - Run name: hungry_yonath
+May-02 14:50:27.508 [main] DEBUG nextflow.Session - Executor pool size: 2
+May-02 14:50:27.538 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 21.04.3 build 5560
+  Created: 21-07-2021 15:09 UTC (16:09 BST)
+  System: Linux 3.10.0-1160.88.1.el7.x86_64
+  Runtime: Groovy 3.0.7 on Java HotSpot(TM) 64-Bit Server VM 1.8.0_151-b12
+  Encoding: UTF-8 (UTF-8)
+  Process: 9583@sharc-node013.shef.ac.uk [172.30.64.113]
+  CPUs: 1 - Mem: 62.7 GB (42.6 GB) - Swap: 16 GB (16 GB)
+May-02 14:50:27.611 [main] DEBUG nextflow.Session - Work-dir: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/work [nfs]
+May-02 14:50:27.612 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/bin
+May-02 14:50:27.629 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-02 14:50:27.663 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-02 14:50:27.957 [main] DEBUG nextflow.Session - Session start invoked
+May-02 14:50:28.504 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-02 14:50:28.519 [main] DEBUG nextflow.Session - Workflow process names [dsl1]: cellranger_mkref, cellranger_count
+May-02 14:50:28.702 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-02 14:50:28.702 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-02 14:50:28.722 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+May-02 14:50:28.728 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=1; memory=62.7 GB; capacity=1; pollInterval=100ms; dumpInterval=5m
+May-02 14:50:29.069 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-02 14:50:29.070 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-02 14:50:29.093 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+May-02 14:50:29.093 [main] DEBUG nextflow.Session - Session await
+May-02 14:50:29.369 [Actor Thread 7] INFO  nextflow.conda.CondaCache - Creating Conda env: samtools [cache /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/work/conda/env-912cee20caec78e112a5718bb0c00e1c]
+May-02 14:50:29.564 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-02 14:50:29.579 [Task submitter] INFO  nextflow.Session - [a9/c778dc] Submitted process > cellranger_mkref
+May-02 14:50:49.002 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: cellranger_mkref; status: COMPLETED; exit: 1; error: -; workDir: /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/work/a9/c778dc7c9958e2244fe23986a62d7e]
+May-02 14:50:49.118 [Task monitor] ERROR nextflow.processor.TaskProcessor - Error executing process > 'cellranger_mkref'
+
+Caused by:
+  Process `cellranger_mkref` terminated with an error exit status (1)
+
+Command executed:
+
+  #!/bin/bash
+  /home/bop20pp/software/cellranger-7.0.1/cellranger mkref --genome=output_genome --fasta=/fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.fna --genes=/fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.gtf
+
+Command exit status:
+  1
+
+Command output:
+  ['/home/bop20pp/software/cellranger-7.0.1/bin/rna/mkref', '--genome=output_genome', '--fasta=/fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.fna', '--genes=/fastdata/bop20pp/Avian_scRNAseq/ref_files/GCF_015476345.1_ZJU1.0_genomic.gtf']
+  Creating new reference folder at output_genome
+  ...done
+  
+  Writing genome FASTA file into reference folder...
+
+Command error:
+  Traceback (most recent call last):
+    File "/home/bop20pp/software/cellranger-7.0.1/bin/rna/mkref", line 137, in <module>
+      main()
+    File "/home/bop20pp/software/cellranger-7.0.1/bin/rna/mkref", line 128, in main
+      reference_builder.build_gex_reference()
+    File "/home/bop20pp/software/cellranger-7.0.1/lib/python/cellranger/reference_builder.py", line 209, in build_gex_reference
+      self.process_fasta()
+    File "/home/bop20pp/software/cellranger-7.0.1/lib/python/cellranger/reference_builder.py", line 87, in process_fasta
+      self.write_genome_fasta(self.fasta_path)
+    File "/home/bop20pp/software/cellranger-7.0.1/lib/python/cellranger/reference_builder.py", line 273, in write_genome_fasta
+      shutil.copy(self.in_fasta_fns[0], out_fasta_fn)
+    File "/home/bop20pp/software/cellranger-7.0.1/external/anaconda/lib/python3.8/shutil.py", line 418, in copy
+      copyfile(src, dst, follow_symlinks=follow_symlinks)
+    File "/home/bop20pp/software/cellranger-7.0.1/external/anaconda/lib/python3.8/shutil.py", line 276, in copyfile
+      return dst
+  OSError: [Errno 28] No space left on device
+
+Work dir:
+  /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/work/a9/c778dc7c9958e2244fe23986a62d7e
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+May-02 14:50:49.167 [Task monitor] DEBUG nextflow.Session - Session aborted -- Cause: Process `cellranger_mkref` terminated with an error exit status (1)
+May-02 14:50:49.277 [Task monitor] DEBUG nextflow.Session - The following nodes are still active:
+[process] cellranger_count
+  status=ACTIVE
+  port 0: (cntrl) -     ; channel: $
+
+May-02 14:50:49.280 [main] DEBUG nextflow.Session - Session await > all process finished
+May-02 14:50:49.280 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-02 14:50:49.291 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=0ms; failedDuration=19.3s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=0; ]
+May-02 14:50:49.440 [main] DEBUG nextflow.CacheDB - Closing CacheDB done
+May-02 14:50:49.467 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
