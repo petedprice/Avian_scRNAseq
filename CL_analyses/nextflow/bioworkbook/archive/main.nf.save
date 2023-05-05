@@ -1,0 +1,83 @@
+contigs_ch = channel
+    .fromPath(params.
+
+
+species_ch=channel
+    .fromPath(params.metadata)
+    .splitCsv()
+    .map {row -> tuple(row[1], row[2])}
+    .unique()
+    .view()
+
+
+
+process cellranger_mkref {
+
+    input:
+    tuple val(species), val(ref) from species_ch 
+
+    output:
+    //publishDir "cellranger_reference"
+    tuple file("${species}_cellranger_reference"), val(species) into ref_made
+    tuple val(species), val(ref) into to_split_contigs
+
+
+    script:
+    """
+    #!/bin/bash
+    #$params.cellranger mkref --genome=output_genome \
+	--fasta=$params.fasta_dir/${ref}.fasta \
+	--genes=$params.gtf_dir/${ref}.gtf
+    
+    touch ${species}_cellranger_reference
+
+	
+    """
+}
+
+
+samples = channel
+    .fromPath(params.metadata)
+    .splitCsv()
+    .map {row -> tuple(row[0], row[1])}
+    .view()
+
+
+process cellranger_count {
+
+    input: 
+    tuple val(species), file("${species}_cellranger_reference"), val(sample)  from ref_made.combine(samples, by:1)
+
+    output:
+    tuple val(sample), val(species), file("${sample}_${species}.bam") into cellranger_alligned
+
+    script: 
+    """
+    #!/bin/bash
+    #$params.cellranger count --id=$sample \
+	#--fastqs=$params.read_dir \ 
+	#--transcriptome=${species}_cellranger_reference 
+    echo dog > ${sample}_${species}.bam
+    echo ardvark >> ${sample}_${species}.bam
+    """
+}
+
+/*
+process get_contigs {
+    input:
+    tuple val(sample), val(species), file("${sample}_${species}.bam") into cellranger_alligned
+    //tuple val(species), val(ref) from to_split_contigs
+
+    output:
+    //publishDir "cellranger_reference"
+    //tuple file("${species}_cellranger_reference"), val(species) into ref_made, ref_made2
+
+
+    script:
+    """
+    #!/bin/bash
+    #cat GCF_015476345.1_ZJU1.0_genomic.fna | grep '>' | cut -d ' ' -f1 | cut -c2-
+    for i in 
+    """
+}
+*/
