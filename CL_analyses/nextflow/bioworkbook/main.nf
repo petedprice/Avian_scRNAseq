@@ -24,9 +24,11 @@ workflow {
 
     cns=contig_names(counted)
 	.transpose()
-
     splitted=split_bam(cns).view()
     mut_ided = mut_id(splitted)
+ 
+    //cns2=contig_names(species_ch).transpose()
+    //splitted=split_bam(cns2.combine(counted, by: 0)
 
 }
 
