@@ -1,14 +1,17 @@
 process contig_names {
     input:
-    tuple val(species), val(sample), file("${species}_cellranger_reference"), file("${sample}_${species}.bam")
+    tuple val(species), val(ref)
 
     output:
-    tuple val(species), val(sample), file("*.txt"), file("${sample}_${species}.bam")
+    output val(species), file("*.txt")
+
+
     script:
     """
     #!/bin/bash
     mkdir contigs
-    for contig in \$(cat ${species}_cellranger_reference)
+    cat $params.fasta_dir/$ref.fna | grep '>' | cut -d ' ' -f1 | cut -c2- | grep NC* > contigs.txt
+    for contig in \$(grep NC contigs.txt)
     do
     echo \$contig > \${contig}_${species}.txt
     done

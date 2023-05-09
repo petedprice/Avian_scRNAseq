@@ -4,13 +4,15 @@ process cellranger_count {
     tuple val(species), file("${species}_cellranger_reference"), val(sample)
 
     output:
-    //tuple val(species), val(sample), file("${species}_${sample}.bam"), file("${species}_cellranger_reference")
-    tuple val(species), val(sample), file("${species}_cellranger_reference"), file("${sample}_${species}.bam")
+    tuple val(species), val(sample), file("sample/outs/possorted_genome_bam.bam"), file("sample/outs/possorted_genome_bam.bam.bai")
 
     script:
     """
     #!/bin/bash
-    touch ${sample}_${species}.bam
+    $params.cellranger count \
+	--id=$sample \
+   	--fastqs=${params.read_dir}/$sample \
+   	--transcriptome=${species}_cellranger_reference
     """
 
 }
