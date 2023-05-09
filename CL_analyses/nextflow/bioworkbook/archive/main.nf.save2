@@ -1,0 +1,102 @@
+nextflow.enable.dsl=2
+
+process cellranger_mkref {
+    input:
+    tuple val(species), val(ref)
+    output:
+    tuple val(species), file("${species}_cellranger_reference")
+    script:
+    """
+    #!/bin/bash
+    touch ${species}_cellranger_reference
+    echo contig1 > ${species}_cellranger_reference
+    echo contig2 >> ${species}_cellranger_reference
+    """
+}
+
+
+process cellranger_count {
+
+    input:
+    tuple val(species), file("${species}_cellranger_reference"), val(sample)
+    
+    output:
+    //tuple val(species), val(sample), file("${species}_${sample}.bam"), file("${species}_cellranger_reference")
+    tuple val(species), val(sample), file("${species}_cellranger_reference"), file("${sample}_${species}.bam")
+
+    script:
+    """
+    #!/bin/bash
+    touch ${sample}_${species}.bam
+    """
+    
+}
+
+
+
+
+
+process contig_names {
+    input:
+    tuple val(species), val(sample), file("${species}_cellranger_reference"), file("${sample}_${species}.bam")    
+   
+    output:
+    tuple val(species), val(sample), file("*.txt")
+    script:
+    """
+    #!/bin/bash
+    mkdir contigs
+    for contig in \$(cat ${species}_cellranger_reference)
+    do
+    echo \$contig > \${contig}_${species}.txt
+    done 
+    """
+}
+
+
+process split_bam {
+
+    input:
+    tuple val(species), val(sample), file("contig.txt")
+    output:
+    env contig
+
+    script:
+    """
+    #!/bin/bash
+    contig=\$(cat contig.txt)
+    #samtools split bam $(cat contig.txt) > 
+    """
+
+}
+
+
+workflow {
+    species_ch=Channel
+	.fromPath(params.metadata)
+	.splitCsv()
+	.map {row -> tuple(row[1], row[2])}
+	.unique()
+   
+    samples_ch = Channel
+	.fromPath(params.metadata)
+	.splitCsv()
+	.map {row -> tuple(row[1], row[0])}
+	.view()
+
+
+
+    ref_made=cellranger_mkref(species_ch).view()
+    counted=cellranger_count(ref_made.combine(samples_ch, by: 0))
+    cns=contig_names(counted)
+	.transpose().view()
+    splitted=split_bam(cns).view()
+    ////The next thing to do is make sure we have a contig variable that traces which contig is being run. We may be able to do this within the split_bam section.
+    
+
+
+}
+
+
+
+
