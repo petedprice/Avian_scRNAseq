@@ -5,6 +5,9 @@ include { cellranger_count } from './modules/cellranger_count.nf'
 include { contig_names } from './modules/contig_names.nf'
 include { split_bam } from './modules/split_bam.nf'
 include { mut_id } from './modules/mut_id.nf'
+include { mut_compiled } from './modules/mut_compiled.nf'
+include { nocellranger_split_bam } from './modules/nocellranger_split_bam.nf'
+include { create_seq_dict } from './modules/CreateSequenceDictionary.nf'
 
 workflow {
     //Channels species name and reference name
@@ -12,7 +15,7 @@ workflow {
 	.fromPath(params.metadata)
 	.splitCsv()
 	.map {row -> tuple(row[1], row[2])}
-	.unique()
+	.unique().view()
 
     //Channels sample name and species name
     samples_ch = Channel
@@ -20,29 +23,38 @@ workflow {
 	.splitCsv()
 	.map {row -> tuple(row[1], row[0])}
 
-    //Makes cellranger ref for each species, in: species, ref; out:species, species_cr_ref 
-    ref_made=cellranger_mkref(species_ch)
 
-    //Quantifies cellranger data, in:species, species_cr_ref, sample; out: species, sample, bam, bam_index
-    counted=cellranger_count(ref_made.combine(samples_ch, by: 0))
+//    create_seq_dict(species_ch)
 
-<<<<<<< HEAD
+
+
     //Get's list of contig names, in:species, ref ;out:species, contig.txt
     cns=contig_names(species_ch)
+        .transpose().view()
 
-    //cns=contig_names(counted)
-    //	.transpose()
 
-=======
-    cns=contig_names(counted)
-	.transpose()
->>>>>>> develop
-    splitted=split_bam(cns).view()
-    mut_ided = mut_id(splitted)
+    if(params.run_cellranger == "TRUE"){
+    	//Makes cellranger ref for each species, in: species, ref; out:species, species_cr_ref 
+    	ref_made=cellranger_mkref(species_ch)
+
+    	//Quantifies cellranger data, in:species, species_cr_ref, sample; out: species, sample, bam, bam_index
+    	counted=cellranger_count(ref_made.combine(samples_ch, by: 0))
+   
+        //split bam into individual contigs, in:species, sample, bam, bam_index, contig.txt
+        splitted=split_bam(counted.combine(cns, by: 0)).view()
+   
+    } else {
+	//if cellranger data pre made then run as so 
+	//splitted=nocellranger_split_bam(samples_ch)
+        splitted=nocellranger_split_bam(samples_ch.combine(cns, by:0)).view()
+    }
  
-    //cns2=contig_names(species_ch).transpose()
-    //splitted=split_bam(cns2.combine(counted, by: 0)
+	        
+    //Mutation rate analysis
+    mut_ided = mut_id(splitted.combine(species_ch, by:0)).view()
+    mut_compiled = mut_compiled(mut_ided.collect())
 
+ 
 }
 
 
