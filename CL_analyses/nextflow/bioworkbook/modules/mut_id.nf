@@ -1,5 +1,9 @@
 process mut_id {
 
+    tag {'mut_id_' + species + '_' + sample + '_' + contig }
+
+    label 'samtoolsetc'
+
     publishDir 'mut_id', mode: 'copy', overwrite: true, pattern: '*fin_snp*'
 
 

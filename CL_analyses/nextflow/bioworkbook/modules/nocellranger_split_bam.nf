@@ -1,5 +1,7 @@
 process nocellranger_split_bam {
+ 
 
+    label 'samtoolsetc' 
     
 
     input:

@@ -1,15 +1,16 @@
 process mut_compiled {
-    conda './envs/mut_id.yaml'
+
+    publishDir 'mut_compiled', mode: 'copy', overwrite: true, pattern: '*mutation_data.txt.gz'
 
     input:
-    tuple val(species), val(sample), val(contig), file("*_fin_snp_read.txt.gz")
+    tuple val(sample), file(snps)
 
     output:
-    tuple val(species), val(sample), file("${species}_${sample}_mutation_data.txt.gz")
+    tuple val(sample), file("${sample}_mutation_data.txt.gz")
+    
     script:
     """
     #!/bin/bash
-    cat *_fin_snp_read.txt.gz > ${species}_${sample}_mutation_data.txt.gz
-
+    cat *.txt.gz > ${sample}_mutation_data.txt.gz
     """
 }
