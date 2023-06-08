@@ -10,6 +10,8 @@ include { nocellranger_split_bam } from './modules/nocellranger_split_bam.nf'
 include { create_seq_dict } from './modules/CreateSequenceDictionary.nf'
 include { R_mut_filtering } from './modules/R_mut_filtering.nf'
 
+params.seurat_etc="TRUE"
+
 workflow {
     //Channels species name and reference name
     species_ch=Channel
@@ -56,6 +58,23 @@ workflow {
     Rfiltered = R_mut_filtering(mut_ided)
 
     mut_comp = mut_compiled(Rfiltered.groupTuple())
+    if(params.seurat_etc == "TRUE"){
+	sex_stage_ch = Channel
+        	.fromPath(params.metadata)
+        	.splitCsv()
+        	.map {row -> tuple(row[1], row[3], row[4])}
+	
+        seurat
+
+
+	\*sex_stage_pre_seurat = mut_comp
+		.combine(sex_stage_ch, by:0)
+		.groupTuple(by: [1,3,4])
+		.view() 
+	*/
+
+
+    }
 
  
 }

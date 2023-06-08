@@ -10,5 +10,4 @@ nextflow run /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkb
 	--run_cellranger FALSE \
 	-resume \
 	-with-dag flowchat.png \
-	-with-trace \ 
-	-bg
+	-with-trace
