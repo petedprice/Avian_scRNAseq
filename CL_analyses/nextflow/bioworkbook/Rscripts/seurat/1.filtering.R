@@ -16,22 +16,24 @@ path_to_MD2022 <- args[1]
 datapath = args[2]
 output_path = args[3]
 metadata_nf=read.csv(args[4], header = F)
+mt_genes=read.table(args[5])
 files <- list.files(datapath)
 files_clean <- toupper(files) %>% sub("_", "", .)
 samples_clean <- toupper(metadata_nf[,1]) %>% sub("_", "", .)
 metadata_nf[,1] <- samples_clean
 files <- files[files_clean %in% samples_clean]
+colnames(metadata_nf) <- c("sample", "species", "ref", "sex", "stage")
+metadata_nf$files <- files
 
-metadata_nf$data <- files
+print(metadata_nf)
 
-source(paste(path_to_MD2022, "/Rcripts/seurat/Usefull_functions.R", sep = ""))
+source(paste(path_to_MD2022, "/Rscripts/seurat/Usefull_functions.R", sep = ""))
 
 #filtering thresholds 
 filt = "filtered"
 ftr = 200
 
 #READING IN COUNT MATRICES and creating sample variables. 
-obj_list <- list()
 c=0
 for (file in metadata_nf$files){
   print(file)
@@ -44,15 +46,23 @@ for (file in metadata_nf$files){
                                    min.cells = 3) 
   seurat_obj <- RenameCells(seurat_obj, add.cell.id = metadata_nf$sample[c])
   seurat_obj@meta.data$sample <- metadata_nf$sample[c]
-  obj_list <- c(obj_list, seurat_obj)
+  if (c == 1){
+	merged_seurat = seurat_obj
+  } else {
+	merged_seurat = merge(x = seurat_obj, y = merged_seurat)
+  }
 }
 
-merged_seurat <- reduce(obj_list, merge)
 merged_seurat$log10GenesPerUMI <- log10(merged_seurat$nFeature_RNA) / log10(merged_seurat$nCount_RNA) # Calculating the number of features per UMI 
 
 
+
+
 #CALCULATING PROPORTION OF READS MAPPING TO MITOCHONDRIAL GENOME (x100 as originally a percentage)
-merged_seurat$mitoRatio <- PercentageFeatureSet(object = merged_seurat, pattern = "mt")/ 100 
+
+mt2=intersect(mt_genes$V1, rownames(merged_seurat))
+
+merged_seurat$mitoRatio <- PercentageFeatureSet(object = merged_seurat, features = mt2)/ 100 
 metadata <- merged_seurat@meta.data # Seperately creating metadata dataframe to save metrics etc without risking affecting seurat object
 metadata$cells <- rownames(metadata) #add cell IDs to metadat
 # Rename columns
@@ -74,7 +84,7 @@ save(filtered_seurat, metadata_clean, file = paste(outdatapath, "/filtered_seura
 
 plotpath = paste(output_path, "/plots", sep = "")
 dir.create(plotpath, showWarnings = F, recursive = T)
-#make_plots_function(metadata_clean, plotpath = plotpath)
+make_plots_function(metadata_clean, plotpath = plotpath)
 
 
 
