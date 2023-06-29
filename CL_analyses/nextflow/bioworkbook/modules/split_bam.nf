@@ -1,6 +1,7 @@
 process split_bam {
     //conda './envs/mut_id.yaml'
     label 'samtoolsetc'
+    errorStrategy 'ignore'
 
     input:
     tuple val(species), val(sample), file("sample/outs/possorted_genome_bam.bam"), file("sample/outs/possorted_genome_bam.bam.bai"), file("contig.txt")

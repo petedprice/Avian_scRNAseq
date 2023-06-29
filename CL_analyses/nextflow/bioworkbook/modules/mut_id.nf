@@ -4,6 +4,12 @@ process mut_id {
 
     label 'samtoolsetc'
 
+    cpus { 8 * task.attempt }
+    errorStrategy 'retry'
+    maxRetries 6
+    memory { 104.GB * task.attempt }
+
+
     publishDir 'mut_id', mode: 'copy', overwrite: true, pattern: '*fin_snp*'
 
 
@@ -26,7 +32,7 @@ process mut_id {
     samtools index CB_subset.bam
 
     #Run BCFTOOLS
-    bcftools mpileup --threads 1 -f \$ref_genome CB_subset.bam | bcftools call --threads 1 -mv -Ob | bcftools view --types snps -i 'GT="het" &  INFO/DP >= 4 & (DP4[0]+DP4[1])>1 & (DP4[2]+DP4[3])>1' | gzip > snps.vcf.gz
+    bcftools mpileup --threads 1 -f \$ref_genome CB_subset.bam | bcftools call --threads 1 -mv -Ob | bcftools view --types snps -i 'GT="het" &  INFO/DP >= 4 & (DP4[0]+DP4[1])>0 & (DP4[2]+DP4[3])>0' | gzip > snps.vcf.gz
 
     #RUN SAM2TSV
     #java -jar ${projectDir}/software/jvarkit.ja sam2tsv -R \$ref_genome --regions snps.vcf.gz -N -o sam2tsv.tsv.gz CB_subset.bam

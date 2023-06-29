@@ -1,53 +1,28 @@
 #!/usr/bin/env Rscript
 ##### LIBRARIES -------
-library(SCINA)
 library(Seurat)
-library(tidyverse)
+library(tidyr)
 library(Matrix)
 library(scales)
 library(cowplot)
 library(RCurl)
 library(stringr)
-library(ggpubr)
+library(dplyr)
+library(ggplot2)
+#library(ggpubr)
 
+install.packages(c("SCINA"), repos = 'http://cran.us.r-project.org', lib = '.')
+library(SCINA,lib.loc = '.')
 #SC_TYPE FUNCTIONS
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
 
 ###### SETTING UP INPUT COMMANDS ----
-option_list = list(
-  make_option(c("-d", "--path_to_seurat_object"), type="character", default=".", 
-              help="path to where you have the stored your seurat object", metavar="character"),
-  make_option(c("-o", "--output_path"), type="character", default=".", 
-              help="where you want to save your output plots and RData files", metavar="character"),
-  make_option(c("-t", "--threads"), type="numeric", default=1, 
-              help="number of threads for parallelising", metavar="numeric"),
-  make_option(c("-l", "--ortholog_table"), type="character", default="/home/bop20pp/software/MeioticDrive2022/R_analyses/data/ortholog_table.txt", 
-              help="path to dataframe containing ortholog information", metavar="character"),
-  make_option(c("-s", "--marker_source"), type="character", default="comp_clusters", 
-              help="which markers to use for classifying cell types. Column name from ortholog_table.", metavar="character")
-  
-)
-
-
-opt_parser = OptionParser(option_list=option_list)
-opt = parse_args(opt_parser)
-output_path <- opt$output_path
-
-if (is.null(opt$path_to_seurat_object)){
-  print_help(opt_parser)
-  stop("At least one argument must be supplied (input file)", call.=FALSE)
-}
-
-#make folders
-outdatapath = paste(output_path, "/outdata", sep = "")
+args = commandArgs(trailingOnly=TRUE)
+outdatapath = paste(args[2], "/outdata/", sep = "")
 dir.create(outdatapath, showWarnings = F, recursive = T)
-plotpath = paste(output_path, "/plots/", sep = "")
+plotpath = paste(args[2], "/plots/", sep = "")
 dir.create(plotpath, showWarnings = F, recursive = T)
-
-#parallelise
-plan("multicore", workers = opt$threads)
-options(future.globals.maxSize = 8000 * 1024^5)
 
 ##### FUNCTIONS ----
 swap_names <- function(x, tab, srt){
@@ -69,14 +44,18 @@ check_subset <- function(cell, ml){
 
 
 ##### LOADING DATA ----
-load(opt$path_to_seurat_object)
+load(args[1])
 seurat_integrated$seurat_clusters <- seurat_integrated$integrated_snn_res.0.1
-ortholog_table <- read.table(opt$ortholog_table)
-marker_source <- opt$marker_source
-clusters <- unique(ortholog_table[,marker_source])
+markers <- read.csv(args[3])
+Sex=substring(args[4], 1,1)
+
+markers <- filter(markers, substring(sex,1,1) == Sex | sex == "Both")
+clusters <- unique(markers[,'celltype'])
 clusters <- clusters[is.na(clusters) == F]
 
-markerslist <- lapply(clusters, function(x)(return(ortholog_table$TDel_GID[ortholog_table[,marker_source] == x])))
+
+
+markerslist <- lapply(clusters, function(x)(return(markers$marker[markers[,'celltype'] == x])))
 markerslist <- lapply(markerslist, function(x)(return(x[which(is.na(x) == F)])))
 names(markerslist) <- clusters
 
@@ -94,7 +73,7 @@ cL_resutls = do.call("rbind", lapply(unique(seurat_integrated@meta.data$seurat_c
   head(data.frame(cluster = cl, type = names(es.max.cl), scores = es.max.cl, ncells = sum(seurat_integrated@meta.data$seurat_clusters==cl)), 10)
 }))
 sctype_scores = cL_resutls %>% group_by(cluster) %>% top_n(n = 1, wt = scores)  
-
+seurat_marker <- seurat_integrated
 # set low-confident (low ScType score) clusters to "unknown"
 sctype_scores$type[as.numeric(as.character(sctype_scores$scores)) < sctype_scores$ncells/4] = "Unknown"
 print(sctype_scores[,1:3])
@@ -122,24 +101,15 @@ seurat_integrated$scina_labels <- results$cell_labels
 
 
 seurat_marker <- seurat_integrated
-seurat_marker@meta.data$marker_source <- marker_source
 d1 <- DimPlot(seurat_marker, reduction = "umap", label = TRUE, repel = TRUE, 
               group.by = 'sctype_labels')  +
   ggtitle("SC_type clusters")+  theme(plot.title = element_text(hjust = 0.5))
+ggsave(filename = paste(plotpath, "SC_TYPE_CELL_TYPES.pdf", sep = ""),  d1, width = 17, height = 8.5)
 
 d2 <- DimPlot(seurat_marker, reduction = 'umap', group.by = "scina_labels", label = T) +
   ggtitle("SCINA clusters")+  theme(plot.title = element_text(hjust = 0.5))
-d <- ggarrange(plotlist = list(d1,d2), nrow = 1)
-ggsave(filename = paste(plotpath, "CELL_TYPES.pdf", sep = ""),  width = 17, height = 8.5)
+ggsave(filename = paste(plotpath, "SCINA_CELL_TYPES.pdf", sep = ""),  d2, width = 17, height = 8.5)
 
-d1 <- DimPlot(seurat_marker, reduction = "umap", label = TRUE, repel = TRUE, 
-              group.by = 'sctype_labels', split.by = 'treatment')  +
-  ggtitle("SC_type clusters")+  theme(plot.title = element_text(hjust = 0.5))
-d2 <- DimPlot(seurat_marker, reduction = 'umap', group.by = "scina_labels", label = T, 
-              split.by = 'treatment') +
-  ggtitle("SCINA clusters")+  theme(plot.title = element_text(hjust = 0.5))
-d <- ggarrange(plotlist = list(d1,d2), nrow = 2)
-ggsave(filename = paste(plotpath, "CELL_TYPES_treatment_split.pdf", sep = ""),  width = 17, height = 17)
 
-save(seurat_marker, file = paste(outdatapath, "/", marker_source, "_marker_seurat.RData", sep = ""))
+save(seurat_marker, file = paste(outdatapath, "/marker_seurat.RData", sep = ""))
 
