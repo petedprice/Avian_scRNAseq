@@ -2,10 +2,10 @@ process R_mut_filtering {
 
     label 'tidyverse'
 
-    cpus { 18 * task.attempt }
+    cpus { 5 * task.attempt }
     errorStrategy 'retry'
     maxRetries 6
-    memory { 250.GB * task.attempt }
+    memory { 68.GB * task.attempt }
 
 
     //publishDir 'mut_compiled', mode: 'copy', overwrite: true, pattern: '*snp_summarise.txt.gz'

@@ -24,7 +24,7 @@ process seurat_filter {
 
 
 
-    cat ${params.metadata} | grep $species | grep ,$sex, | grep $stage | grep $sample > metadata_ss.csv
+    cat ${params.metadata} | grep $species | grep ,$sex, | grep $stage | grep ${sample}, > metadata_ss.csv
     Rscript ${projectDir}/Rscripts/seurat/subsetted_funcs/1.filtering.R \
 	 ${projectDir} \
 	 ${params.cellranger_data} \

@@ -29,17 +29,16 @@ mutation_read <- function(sample){
   mut_rate <- read.table(paste(sample, "_mutation_data.txt.gz", sep = ""), sep = " ", header = F) 
   colnames(mut_rate) <- c("Barcode", "pos", "refn", "altn", "CHROM", "ref", "alt")
   mut_rate$Barcode <- paste(samp, mut_rate$Barcode, sep = "_")
-  metadata_tmp <- filter(metadata, sample == samp & is.na(sctype_labels) == F)
-  mut_rate_sc <- mut_rate %>% merge(metadata[
-    is.na(metadata$sctype_labels) == F,c('cells', 'sctype_labels')], 
+  metadata <- filter(seurat_marker@meta.data, sample == samp & is.na(sctype_labels) == F)
+  mut_rate_sc <- mut_rate %>% merge(seurat_marker@meta.data[
+    is.na(seurat_marker@meta.data$sctype_labels) == F,c('cells', 'sctype_labels')], 
     by.x = 'Barcode', by.y = "cells")
   mut_rate_sc$sample <- sample
   return(mut_rate_sc)
 }
 
 
-metadata <- seurat_marker@meta.data
-
+seurat_marker <- subset(seurat_marker, sample = sample_info$sample)
 
 c=0
 for (f in sample_info$sample){
@@ -106,8 +105,8 @@ gs$mut_level <- gs$nmuts/(gs$nnone+gs$nmuts)
 
 #write.table(gs, "//fastdata/bop20pp/Avian_scRNAseq/R_analyses/mut_id/gs.txt")
 
-#seurat_mutant <- seurat_marker
-mutant_metadata <- merge(metadata, gs[,c(1,4,5,6)], by.x = "cells", by.y = "Barcode", all.x = F)
+seurat_mutant <- seurat_marker
+seurat_mutant@meta.data <- merge(seurat_mutant@meta.data, gs[,c(1,4,5,6)], by.x = "cells", by.y = "Barcode", all.x = TRUE)
 
-#save(seurat_mutant, file = paste(outdatapath, "/seurat_mutant.RData", sep = ""))
-write.csv(mutant_metadata, paste(mutant_metadata$sample[1], "mutant_metadata.csv", sep = "_"))
+save(seurat_mutant, file = paste(outdatapath, "/seurat_mutant.RData", sep = ""))
+

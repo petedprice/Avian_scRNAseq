@@ -76,11 +76,6 @@ workflow {
 	seurat_integrated=seurat_SCT_integrate(seurat_doubleted)
         seurat_marked=seurat_markers(seurat_integrated)
 
-        /*seurat_filtered=seurat_filter(sex_stage_ch.groupTuple(by: [1,2,3,4]))		
-	seurat_integrated=seurat_SCT_integrate(seurat_filtered)
-        seurat_marked=seurat_markers(seurat_integrated)
-
-
 	sex_stage_mut = mut_comp
 		.combine(sex_stage_ch, by:0)
 		.groupTuple(by: [2,3,4,5])
@@ -89,7 +84,6 @@ workflow {
 		.combine(seurat_marked, by:[2,3,4])
 		.map{it[3,0,1,2,4,7]}.view()
         seurat_mutated=seurat_mutation(marker_mut)
-	*/ 
     }
 
 
