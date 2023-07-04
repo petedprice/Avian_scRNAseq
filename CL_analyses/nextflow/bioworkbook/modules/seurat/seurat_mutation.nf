@@ -22,7 +22,7 @@ process seurat_mutation {
 
     cat ${params.metadata} | grep $species | grep ,$sex, | grep $stage > metadata_ss.csv
     
-    echo running again lol and again
+    echo running again lol and again once more
   
     echo $samples | sed 's/[],[]//g' > samples.txt
     for samp in \$(cat samples.txt)
