@@ -60,7 +60,9 @@ somatic_snps <- filter(merged_sc_mut, sctype_labels != "germ") %>%
   group_by(pos, CHROM, sample) %>% 
   reframe(refn = sum(refn), 
           altn = sum(altn), 
-          depth = sum(c(altn, refn))) %>% 
+          depth = sum(c(altn, refn)), 
+          ref = ref[1], 
+          alt = names(which.max(table(alt)))) %>% 
   mutate(genotype = case_when(refn == 0 ~"alt", 
                               altn == 0 ~"ref", 
                               refn > 0 & altn > 0 ~ "het")) 
@@ -68,43 +70,51 @@ print("done somatic snps")
 #write.csv(somatic_snps,  file=gzfile("/fastdata/bop20pp/Avian_scRNAseq/R_analyses/mut_id/somatic_snps.csv.gz"))
 
 somatic_snps_filt <- somatic_snps %>% 
-  filter(altn > 10 | refn > 10) %>% 
-  filter(altn == depth | refn == depth) %>% 
-  filter(genotype != 'het')
+  filter(altn > 9 | refn > 9) %>% 
+  filter(altn == depth | refn == depth)
   
 germ_snps <- filter(merged_sc_mut, sctype_labels == "germ") %>% 
   group_by(pos, CHROM, Barcode, sample, sctype_labels) %>% 
   reframe(refn = sum(refn), 
           altn = sum(altn), 
-          depth = sum(c(altn, refn))) %>% 
+          depth = sum(c(altn, refn)), 
+          ref = ref[1], 
+          alt = names(which.max(table(alt)))) %>% 
   filter(pos %in% somatic_snps$pos) %>% 
   mutate(genotype = case_when(refn == 0 ~"alt", 
                               altn == 0 ~"ref",
                               (refn > 0 & altn > 0) ~"het"))
 print("done germ snps")
+
+
+
 #write.csv(germ_snps,  file=gzfile(
 #  "/fastdata/bop20pp/Avian_scRNAseq/R_analyses/mut_id/germ_snps.csv.gz"))
 
 
 germ_somatic <-  germ_snps %>% 
-  merge(somatic_snps, by = c('pos', 'sample', 'CHROM'), suffixes = c( '.other','.somatic')) %>% 
+  merge(somatic_snps_filt, by = c('pos', 'sample', 'CHROM', "ref", "alt"), suffixes = c( '.other','.somatic')) %>% 
   mutate(mutated = case_when(genotype.other != genotype.somatic ~ "mutation", 
                              genotype.other == genotype.somatic ~ "none"))
 
 germ_somatic$mutated[germ_somatic$genotype.other == 'het' & 
                        germ_somatic$genotype.somatic != 'het'] <- "mutation"
 
-
+germ_somatic %>% 
+  ggplot(aes(x = pos, y = mutated)) + geom_point() + 
+  facet_grid(. ~ CHROM)
 print("doing gs file")
+
+
 gs <- germ_somatic %>% 
- filter(genotype.other == 'het' | genotype.somatic != 'het') %>% 
+  filter(genotype.other == 'het' | genotype.somatic != 'het') %>% 
   group_by(Barcode, sample, sctype_labels) %>% 
-  reframe(nmuts = sum(which(mutated == 'mutation')),
-          nnone = sum(which(mutated == "none")))
+  reframe(nmuts = length(which(mutated == 'mutation')),
+          nnone = length(which(mutated == "none")))
 gs$mut_level <- gs$nmuts/(gs$nnone+gs$nmuts)
 
 
-#write.table(gs, "//fastdata/bop20pp/Avian_scRNAseq/R_analyses/mut_id/gs.txt")
+write.table(gs, paste(gs$sample[1], "_gs.txt", sep = ""))
 
 #seurat_mutant <- seurat_marker
 mutant_metadata <- merge(metadata, gs[,c(1,4,5,6)], by.x = "cells", by.y = "Barcode", all.x = F)
