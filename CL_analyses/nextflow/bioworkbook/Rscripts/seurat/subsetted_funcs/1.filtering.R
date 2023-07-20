@@ -18,10 +18,8 @@ output_path = args[3]
 metadata_nf=read.csv(args[4], header = F)
 mt_genes=read.table(args[5])
 files <- list.files(datapath)
-files_clean <- toupper(files) %>% sub("_", "", .)
-samples_clean <- toupper(metadata_nf[,1]) %>% sub("_", "", .)
-metadata_nf[,1] <- samples_clean
-files <- files[files_clean %in% samples_clean]
+samples <- metadata_nf[,1]
+files <- files[files %in% samples]
 colnames(metadata_nf) <- c("sample", "species", "ref", "sex", "stage")
 metadata_nf$files <- files
 
