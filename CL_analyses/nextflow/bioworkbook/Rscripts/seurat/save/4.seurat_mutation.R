@@ -24,15 +24,16 @@ samples=as.list(read.table(args[3]))
 sample_info=read.table(args[4], header = F, sep = ",")
 colnames(sample_info) <- c("sample", "species", 'ref', "sex", "stage")
 
-mutation_read <- function(samp){
-  mut_rate <- read.table(paste(samp, "_mutation_data.txt.gz", sep = ""), sep = " ", header = F) 
+mutation_read <- function(sample){
+  samp = gsub("_", "", sample) %>% toupper()
+  mut_rate <- read.table(paste(sample, "_mutation_data.txt.gz", sep = ""), sep = " ", header = F) 
   colnames(mut_rate) <- c("Barcode", "pos", "refn", "altn", "CHROM", "ref", "alt")
   mut_rate$Barcode <- paste(samp, mut_rate$Barcode, sep = "_")
   metadata_tmp <- filter(metadata, sample == samp & is.na(sctype_labels) == F)
   mut_rate_sc <- mut_rate %>% merge(metadata[
     is.na(metadata$sctype_labels) == F,c('cells', 'sctype_labels')], 
     by.x = 'Barcode', by.y = "cells")
-  mut_rate_sc$sample <- samp
+  mut_rate_sc$sample <- sample
   return(mut_rate_sc)
 }
 

@@ -2,7 +2,7 @@
 
 #!/bin/bash
 
-#$ -l h_rt=4:0:0
+#$ -l h_rt=8:0:0
 
 #$ -l rmem=16G
 

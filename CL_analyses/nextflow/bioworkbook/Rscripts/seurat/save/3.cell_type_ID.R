@@ -25,6 +25,11 @@ plotpath = paste(args[2], "/plots/", sep = "")
 dir.create(plotpath, showWarnings = F, recursive = T)
 
 ##### FUNCTIONS ----
+swap_names <- function(x, tab, srt){
+  names <- unlist(lapply(x, function(g)(return(tab$TDel_GID[tab$Dros_GID == g])))) %>% 
+    gsub(pattern = "gene-", replacement = "")
+  return(intersect(names, rownames(srt)))
+}
 
 check_subset <- function(cell, ml){
   matches <- lapply(ml, function(x)(return(prod(cell %in% x)))) %>% 

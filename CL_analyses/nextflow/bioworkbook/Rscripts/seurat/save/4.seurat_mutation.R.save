@@ -24,21 +24,21 @@ samples=as.list(read.table(args[3]))
 sample_info=read.table(args[4], header = F, sep = ",")
 colnames(sample_info) <- c("sample", "species", 'ref', "sex", "stage")
 
-mutation_read <- function(samp){
-  mut_rate <- read.table(paste(samp, "_mutation_data.txt.gz", sep = ""), sep = " ", header = F) 
+mutation_read <- function(sample){
+  samp = gsub("_", "", sample) %>% toupper()
+  mut_rate <- read.table(paste(sample, "_mutation_data.txt.gz", sep = ""), sep = " ", header = F) 
   colnames(mut_rate) <- c("Barcode", "pos", "refn", "altn", "CHROM", "ref", "alt")
   mut_rate$Barcode <- paste(samp, mut_rate$Barcode, sep = "_")
-  metadata_tmp <- filter(metadata, sample == samp & is.na(sctype_labels) == F)
-  mut_rate_sc <- mut_rate %>% merge(metadata[
-    is.na(metadata$sctype_labels) == F,c('cells', 'sctype_labels')], 
+  metadata <- filter(seurat_marker@meta.data, sample == samp & is.na(sctype_labels) == F)
+  mut_rate_sc <- mut_rate %>% merge(seurat_marker@meta.data[
+    is.na(seurat_marker@meta.data$sctype_labels) == F,c('cells', 'sctype_labels')], 
     by.x = 'Barcode', by.y = "cells")
-  mut_rate_sc$sample <- samp
+  mut_rate_sc$sample <- sample
   return(mut_rate_sc)
 }
 
 
-metadata <- seurat_marker@meta.data
-
+seurat_marker <- subset(seurat_marker, sample = sample_info$sample)
 
 c=0
 for (f in sample_info$sample){
@@ -59,9 +59,7 @@ somatic_snps <- filter(merged_sc_mut, sctype_labels != "germ") %>%
   group_by(pos, CHROM, sample) %>% 
   reframe(refn = sum(refn), 
           altn = sum(altn), 
-          depth = sum(c(altn, refn)), 
-          ref = ref[1], 
-          alt = names(which.max(table(alt)))) %>% 
+          depth = sum(c(altn, refn))) %>% 
   mutate(genotype = case_when(refn == 0 ~"alt", 
                               altn == 0 ~"ref", 
                               refn > 0 & altn > 0 ~ "het")) 
@@ -69,49 +67,46 @@ print("done somatic snps")
 #write.csv(somatic_snps,  file=gzfile("/fastdata/bop20pp/Avian_scRNAseq/R_analyses/mut_id/somatic_snps.csv.gz"))
 
 somatic_snps_filt <- somatic_snps %>% 
-  filter(depth > 4 & genotype != "het")
+  filter(altn > 10 | refn > 10) %>% 
+  filter(altn == depth | refn == depth) %>% 
+  filter(genotype != 'het')
   
 germ_snps <- filter(merged_sc_mut, sctype_labels == "germ") %>% 
   group_by(pos, CHROM, Barcode, sample, sctype_labels) %>% 
   reframe(refn = sum(refn), 
           altn = sum(altn), 
-          depth = sum(c(altn, refn)), 
-          ref = ref[1], 
-          alt = names(which.max(table(alt)))) %>% 
+          depth = sum(c(altn, refn))) %>% 
   filter(pos %in% somatic_snps$pos) %>% 
   mutate(genotype = case_when(refn == 0 ~"alt", 
                               altn == 0 ~"ref",
                               (refn > 0 & altn > 0) ~"het"))
 print("done germ snps")
-
-
-
 #write.csv(germ_snps,  file=gzfile(
 #  "/fastdata/bop20pp/Avian_scRNAseq/R_analyses/mut_id/germ_snps.csv.gz"))
 
 
 germ_somatic <-  germ_snps %>% 
-  merge(somatic_snps_filt, by = c('pos', 'sample', 'CHROM'), suffixes = c( '.other','.somatic')) %>% 
-  mutate(mutated = case_when(genotype.other != genotype.somatic  & genotype.somatic != "het" ~ "mutation", 
+  merge(somatic_snps, by = c('pos', 'sample', 'CHROM'), suffixes = c( '.other','.somatic')) %>% 
+  mutate(mutated = case_when(genotype.other != genotype.somatic ~ "mutation", 
                              genotype.other == genotype.somatic ~ "none"))
 
-write.table(germ_somatic, paste(germ_somatic$sample[1], "_germ_somatic.txt", sep = ""))
+germ_somatic$mutated[germ_somatic$genotype.other == 'het' & 
+                       germ_somatic$genotype.somatic != 'het'] <- "mutation"
+
 
 print("doing gs file")
-
-
 gs <- germ_somatic %>% 
-  filter(genotype.other == 'het' | genotype.somatic != 'het') %>% 
+ filter(genotype.other == 'het' | genotype.somatic != 'het') %>% 
   group_by(Barcode, sample, sctype_labels) %>% 
-  reframe(nmuts = length(which(mutated == 'mutation')),
-          nnone = length(which(mutated == "none")))
+  reframe(nmuts = sum(which(mutated == 'mutation')),
+          nnone = sum(which(mutated == "none")))
 gs$mut_level <- gs$nmuts/(gs$nnone+gs$nmuts)
 
 
-#write.table(gs, paste(gs$sample[1], "_gs.txt", sep = ""))
+#write.table(gs, "//fastdata/bop20pp/Avian_scRNAseq/R_analyses/mut_id/gs.txt")
 
-#seurat_mutant <- seurat_marker
-mutant_metadata <- merge(metadata, gs[,c(1,4,5,6)], by.x = "cells", by.y = "Barcode", all.x = F)
+seurat_mutant <- seurat_marker
+seurat_mutant@meta.data <- merge(seurat_mutant@meta.data, gs[,c(1,4,5,6)], by.x = "cells", by.y = "Barcode", all.x = TRUE)
 
-#save(seurat_mutant, file = paste(outdatapath, "/seurat_mutant.RData", sep = ""))
-write.csv(mutant_metadata, paste(mutant_metadata$sample[1], "mutant_metadata.csv", sep = "_"))
+save(seurat_mutant, file = paste(outdatapath, "/seurat_mutant.RData", sep = ""))
+
