@@ -6,7 +6,7 @@ process mut_id {
 
     cpus { 8 * task.attempt }
     errorStrategy 'retry'
-    maxRetries 6
+    maxRetries 7
     memory { 104.GB * task.attempt }
 
 

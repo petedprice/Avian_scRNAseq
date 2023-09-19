@@ -11,8 +11,8 @@ library(dplyr)
 library(ggplot2)
 #library(ggpubr)
 
-install.packages(c("SCINA"), repos = 'http://cran.us.r-project.org', lib = '.')
-library(SCINA,lib.loc = '.')
+#install.packages(c("SCINA"), repos = 'http://cran.us.r-project.org', lib = '.')
+#library(SCINA,lib.loc = '.')
 #SC_TYPE FUNCTIONS
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
@@ -81,18 +81,18 @@ for(j in unique(sctype_scores$cluster)){
 
 
 #### SCINA ----
-keep_or_not <- lapply(markerslist, check_subset, ml = markerslist) %>% 
-  unlist()
-SCINA_markerslist <- markerslist[keep_or_not]
-SCINA_markerslist <- markerslist
-
-scina.data <- as.data.frame(seurat_integrated@assays$integrated[,]) 
-
-results = SCINA(scina.data, SCINA_markerslist, 
-                max_iter = 1, convergence_n = 10, 
-                convergence_rate = 0.999, sensitivity_cutoff = 0.9, 
-                rm_overlap=FALSE, allow_unknown=TRUE, log_file='SCINA.log')
-seurat_integrated$scina_labels <- results$cell_labels
+#keep_or_not <- lapply(markerslist, check_subset, ml = markerslist) %>% 
+#  unlist()
+#SCINA_markerslist <- markerslist[keep_or_not]
+#SCINA_markerslist <- markerslist
+#
+#scina.data <- as.data.frame(seurat_integrated@assays$integrated[,]) 
+#
+#results = SCINA(scina.data, SCINA_markerslist, 
+#                max_iter = 1, convergence_n = 10, 
+#                convergence_rate = 0.999, sensitivity_cutoff = 0.9, 
+#                rm_overlap=FALSE, allow_unknown=TRUE, log_file='SCINA.log')
+#seurat_integrated$scina_labels <- results$cell_labels
 
 
 seurat_marker <- seurat_integrated
@@ -101,9 +101,9 @@ d1 <- DimPlot(seurat_marker, reduction = "umap", label = TRUE, repel = TRUE,
   ggtitle("SC_type clusters")+  theme(plot.title = element_text(hjust = 0.5))
 ggsave(filename = paste(plotpath, "SC_TYPE_CELL_TYPES.pdf", sep = ""),  d1, width = 17, height = 8.5)
 
-d2 <- DimPlot(seurat_marker, reduction = 'umap', group.by = "scina_labels", label = T) +
-  ggtitle("SCINA clusters")+  theme(plot.title = element_text(hjust = 0.5))
-ggsave(filename = paste(plotpath, "SCINA_CELL_TYPES.pdf", sep = ""),  d2, width = 17, height = 8.5)
+#d2 <- DimPlot(seurat_marker, reduction = 'umap', group.by = "scina_labels", label = T) +
+#  ggtitle("SCINA clusters")+  theme(plot.title = element_text(hjust = 0.5))
+#ggsave(filename = paste(plotpath, "SCINA_CELL_TYPES.pdf", sep = ""),  d2, width = 17, height = 8.5)
 
 
 save(seurat_marker, file = paste(outdatapath, "/marker_seurat.RData", sep = ""))

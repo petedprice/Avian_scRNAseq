@@ -71,7 +71,7 @@ workflow {
         	.splitCsv()
         	.map {row -> tuple(row[0], row[3], row[4], row[1], row[2])}
 	seurat_filtered=seurat_filter(sex_stage_ch)
-	seurat_doubleted=seurat_doublet(seurat_filtered).groupTuple(by: [1,2,3,4]).view()
+	seurat_doubleted=seurat_doublet(seurat_filtered).groupTuple(by: [1,2,3,4])
 
 	seurat_integrated=seurat_SCT_integrate(seurat_doubleted)
         seurat_marked=seurat_markers(seurat_integrated)
@@ -82,7 +82,7 @@ workflow {
 		 
 	marker_mut = sex_stage_mut
 		.combine(seurat_marked, by:[2,3,4])
-		.map{it[3,0,1,2,4,7]}.view()
+		.map{it[3,0,1,2,4,7]}
         seurat_mutated=seurat_mutation(marker_mut)
     }
 

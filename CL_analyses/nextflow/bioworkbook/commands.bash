@@ -5,7 +5,7 @@ nextflow run /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkb
 	--gtf_dir /fastdata/bop20pp/Avian_scRNAseq/ref_files/ \
 	--gff_dir /fastdata/bop20pp/Avian_scRNAseq/ref_files/ \
 	--cellranger /home/bop20pp/software/cellranger-7.0.1/cellranger \
-	--metadata /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/metadata_APLS.csv \
+	--metadata /home/bop20pp/software/Avian_scRNAseq/CL_analyses/nextflow/bioworkbook/metadata_full.csv \
 	--read_dir /fastdata/bop20pp/Avian_scRNAseq/reads \
 	--cellranger_data /fastdata/bop20pp/Avian_scRNAseq/cellranger \
 	--run_cellranger FALSE \

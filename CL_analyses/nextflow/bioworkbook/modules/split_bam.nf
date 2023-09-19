@@ -1,7 +1,13 @@
 process split_bam {
     //conda './envs/mut_id.yaml'
     label 'samtoolsetc'
-    errorStrategy 'ignore'
+    errorStrategy 'retry'
+
+    cpus { 1 * task.attempt }
+    errorStrategy 'retry'
+    maxRetries 16
+    memory { 8.GB * task.attempt }
+
 
     input:
     tuple val(species), val(sample), file("sample/outs/possorted_genome_bam.bam"), file("sample/outs/possorted_genome_bam.bam.bai"), file("contig.txt")

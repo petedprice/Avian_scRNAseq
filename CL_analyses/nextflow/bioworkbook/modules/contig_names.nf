@@ -1,9 +1,7 @@
 process contig_names {
-    queue = "ressexcon.q"
-    cpus = 16
-    memory = '8 GB'
+    cpus = 1
+    memory = '4 GB'
     time = '4h'
-    clusterOptions = { '-P ressexcon' }
 
 
     input:
@@ -16,8 +14,9 @@ process contig_names {
     #!/bin/bash
 
     mkdir contigs
-    cat ${params.fasta_dir}/${ref}.fna | grep '>' | cut -d ' ' -f1 | cut -c2- | grep NC* > contigs.txt
-    for contig in \$(grep NC contigs.txt)
+    cat ${params.gff_dir}/${ref}.gff | grep gene | cut -f 1 | uniq > contigs.txt
+    #cat ${params.fasta_dir}/${ref}.fna | grep '>' | cut -d ' ' -f1 | cut -c2- > contigs.txt
+    for contig in \$(cat contigs.txt)
     do
     echo \$contig > \${contig}_${species}.txt
     done
