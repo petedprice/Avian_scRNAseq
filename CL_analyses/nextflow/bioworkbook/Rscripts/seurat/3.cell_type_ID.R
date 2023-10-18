@@ -40,15 +40,24 @@ check_subset <- function(cell, ml){
 
 ##### LOADING DATA ----
 load(args[1])
-seurat_integrated$seurat_clusters <- seurat_integrated$integrated_snn_res.0.1
+
+colums <- colnames(seurat_integrated@meta.data)
+clusters <- seurat_integrated@meta.data[,colums[startsWith(colums, "inte")]] %>% 
+  as.data.frame() %>% 
+  apply(., 2, function(x)(return(max(as.numeric(x)))))
+
+resolution <- which.min(abs(clusters - 24)) %>% names()
+
+
+seurat_integrated$seurat_clusters <- seurat_integrated[[resolution]]
 markers <- read.csv(args[3])
 Sex=substring(args[4], 1,1)
-
+species=args[5]
 markers <- filter(markers, substring(sex,1,1) == Sex | sex == "Both")
+markers$marker <- markers[,species]
+
 clusters <- unique(markers[,'celltype'])
 clusters <- clusters[is.na(clusters) == F]
-
-
 
 markerslist <- lapply(clusters, function(x)(return(markers$marker[markers[,'celltype'] == x])))
 markerslist <- lapply(markerslist, function(x)(return(x[which(is.na(x) == F)])))

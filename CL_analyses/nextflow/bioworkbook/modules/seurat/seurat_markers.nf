@@ -17,11 +17,13 @@ process seurat_markers {
     script:
     """
     #!/bin/bash
+    echo dog
     Rscript ${projectDir}/Rscripts/seurat/3.cell_type_ID.R \
 	integrated_seurat.RData \
 	. \
 	${params.celltype_markers} \
-	$sex
+	$sex \
+	$species
 
     mv outdata/marker_seurat.RData .	
 
