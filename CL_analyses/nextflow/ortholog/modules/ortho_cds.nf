@@ -20,7 +20,7 @@ process ortho_cds {
     cat *cds_longest.fna > comp_longest.fna
     grep -F -f Orthofinder_Results/Orthogroups/Orthogroups_SingleCopyOrthologues.txt Orthofinder_Results/Orthogroups/Orthogroups.tsv > single_copy_orthogroups.tsv
     head -1 Orthofinder_Results/Orthogroups/Orthogroups.tsv | cut -f2-> species_order.txt
-    for c in \$(cat Orthofinder_Results/Orthogroups/Orthogroups_SingleCopyOrthologues.txt | head)
+    for c in \$(cat Orthofinder_Results/Orthogroups/Orthogroups_SingleCopyOrthologues.txt | head -200 )
     do
     grep \$c single_copy_orthogroups.tsv | cut -f2- | tr '\\t' '\\n' | dos2unix > tmp_orthos_name.txt
     grep --no-group-separator -A 1 -F -f tmp_orthos_name.txt comp_longest.fna > \${c}_cds.fa

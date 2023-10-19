@@ -17,8 +17,6 @@ process format_fastas {
     cp seq_folder/*cds.fa cds.fa
     cp seq_folder/*pro.fa pro.fa
 
-    R --version
-
     Rscript ${baseDir}/scripts/rename_fasta.R \
 	species_order.txt \
 	cds.fa \

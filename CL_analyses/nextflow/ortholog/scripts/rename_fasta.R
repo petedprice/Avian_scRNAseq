@@ -16,18 +16,12 @@ for (c in 1:ncol(names)){
 }
 
 #read fasta file into r using base r
-fasta_file=args[2]
+fasta=readLines(args[2])
 
-fasta = read.table(fasta_file, sep = "$", header = FALSE, stringsAsFactors = FALSE)
 #get index of which rows start with ">"
-idx = grep(">", fasta$V1)
+idx = grep(">", fasta)
 #replace indexed lines with names from names file
-fasta$V1[idx] = names
-
-
-#write.table(fasta, file = args[3])
-
-write.table(as.data.frame(unlist(fasta)), args[3], quote = FALSE, 
-            row.names = FALSE, col.names = FALSE, sep = '')
+fasta[idx] = unlist((names))
+writeLines(fasta, args[3])
 
 
