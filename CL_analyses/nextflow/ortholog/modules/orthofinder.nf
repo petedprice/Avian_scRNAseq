@@ -4,8 +4,9 @@ process orthofinder {
     time = '4h'
 
     label 'python_orth'
+    //conda 'anaconda::scipy anaconda::numpy'
 
-    publishDir 'orthofinder', mode: 'copy', overwrite: true, pattern: 'Orthofinder_Results'
+    //publishDir 'orthofinder', mode: 'copy', overwrite: true, pattern: 'Orthofinder_Results'
 
     input:
     file(proteins)
