@@ -2,13 +2,21 @@ A pipeline for analysing sequence evolution rates across a number of user specif
 
 PIPELINE: 
 get_refs: pull references down from NCBI 
+
 longest: get longest isoforms for each gene for each species 
+
 orthofinder: find one-to-one orthologs of proteins using orthofinder 
+
 ortho_cds: Get the CDS orthologs 
+
 format_fastas: format fastas so for each gene, the gene name is the species name 
+
 prank_allign: allign orthogroups 
+
 remove_gaps: remove gaps in allignment and stop codon, remove allignments below a certain length and if not multiple of three or if the gaps are in multiples of three
+
 prank_phy: convert fa allignment to .phy for paml input 
+
 mod0_paml: run 0 model for masking by SWAMP
 
 
