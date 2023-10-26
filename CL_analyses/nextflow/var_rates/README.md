@@ -40,7 +40,7 @@ PROCESS BUT LESS PRIORITY:
 	[]OR MANUALLY ASK FOR GTF AND GENOME ORF
 
 
-
+```
 SWAMP = NO, YES or MULTI
 
 if SWAMP %in% NO/YES(	
@@ -72,5 +72,5 @@ if SWAMP == MULTI (
 )
 
 
-
+```
 
