@@ -14,10 +14,7 @@ process longest_isoform {
     script:
     """
     #!/bin/bash
-    echo $PATH
-    echo $species
-    python --version
-    python ${baseDir}/software/OrthoFinder/tools/primary_transcript.py ${species}.protein.faa
+    python ${baseDir}/software/OrthoFinder_source/tools/primary_transcript.py ${species}.protein.faa
     mv primary_transcripts/${species}.protein.faa ${species}.protein_longest.faa
 
     cat ${species}.protein_longest.faa | grep '>' | cut -f1 -d " " | cut -c 2- > longest_proteins.txt

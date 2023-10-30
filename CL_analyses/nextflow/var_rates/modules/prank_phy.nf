@@ -5,6 +5,8 @@ process prank_phy {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
+    publishDir 'unmasked_allignments', mode: 'copy', overwrite: true, pattern: '*.phy'
+
     label 'prank'
 
     input:

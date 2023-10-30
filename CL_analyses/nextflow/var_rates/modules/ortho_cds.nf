@@ -14,25 +14,17 @@ process ortho_cds {
     script:
     """
     #!/bin/bash
-
-    man grep | cat
-
     cat *cds_longest.fna > comp_longest.fna
-    grep -F -f Orthofinder_Results/Orthogroups/Orthogroups_SingleCopyOrthologues.txt Orthofinder_Results/Orthogroups/Orthogroups.tsv > single_copy_orthogroups.tsv
-    head -1 Orthofinder_Results/Orthogroups/Orthogroups.tsv | cut -f2-> species_order.txt
-    for c in \$(cat Orthofinder_Results/Orthogroups/Orthogroups_SingleCopyOrthologues.txt | head -10 )
+    ls Orthofinder_Results/Single_Copy_Orthologue_Sequences | sed "s/.fa//" > sc_ogs.txt
+    head -1 Orthofinder_Results/Phylogenetic_Hierarchical_Orthogroups/N0.tsv | cut -f4- > species_order.txt
+    for c in \$(cat sc_ogs.txt)
     do
-    grep \$c single_copy_orthogroups.tsv | cut -f2- | tr '\\t' '\\n' | dos2unix > tmp_orthos_name.txt
-    grep --no-group-separator -A 1 -F -f tmp_orthos_name.txt comp_longest.fna > \${c}_cds.fa
     mkdir \${c}_folder
-
+    grep -w \$c Orthofinder_Results/Phylogenetic_Hierarchical_Orthogroups/N0.tsv | cut -f4- | tr '\\t' '\\n' | dos2unix > tmp_orthos_name.txt
+    grep --no-group-separator -A 1 -F -f tmp_orthos_name.txt comp_longest.fna > \${c}_cds.fa
     mv \${c}_cds.fa \${c}_folder
-    cp Orthofinder_Results/Orthogroup_Sequences/\${c}.fa \${c}_folder/\${c}_pro.fa
-
-
+    cp Orthofinder_Results/Single_Copy_Orthologue_Sequences/\${c}.fa \${c}_folder/\${c}_pro.fa    
     done
-    
-
-
     """
+
 }
