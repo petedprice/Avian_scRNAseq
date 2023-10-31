@@ -1,19 +1,28 @@
-
-
-
-> Written with [StackEdit](https://stackedit.io/).  
-
 # Detecting Coding Sequence Evolution
-
-  
 
 A nextlow pipeline utilising PRANK, SWAMP, and PAML to detecting evolution on the coding sequence across a number of optional species
 
 The project is oranigsed into [modules](https://github.com/petedprice/Avian_scRNAseq/tree/main/CL_analyses/nextflow/var_rates/modules), each one running a specific process/script. 
 These are controlled in the [main.nf](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/main.nf) file. 
 User specific controls can be altered in the [nextflow.config](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/nextflow.config) file. 
-Likewise some {data](https://github.com/petedprice/Avian_scRNAseq/tree/main/CL_analyses/nextflow/var_rates/data) input is saved in the data files of which there are defaults that can be changed for user preferences.
+Likewise some [data](https://github.com/petedprice/Avian_scRNAseq/tree/main/CL_analyses/nextflow/var_rates/data) input is saved in the data files of which there are defaults that can be changed for user preferences.
 
+
+User must have nextflow installed on their system to run. 
+Before running on the sheffield stanage system the following two commands are run 
+
+```
+module load Nextflow/22.04.0
+module load Anaconda3/2022.10
+
+nextflow run /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/main.nf \
+	--metadata /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/metadata_full.csv \
+	--tree /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/data/tree.txt \
+        --paml_tree /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/data/paml_tree.txt \
+	-resume \
+	-with-dag flowchat.png \
+	-with-trace
+```
 
 # PIPELINE
 
