@@ -15,7 +15,6 @@ process remove_gaps {
     script:
     """
     #!/bin/bash
-    echo removable
     Rscript ${baseDir}/scripts/remove_gaps.R ${og}_codon.best.fas 100 ${og}_codon.nogaps.fas
     """
 }

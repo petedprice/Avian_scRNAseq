@@ -16,7 +16,6 @@ process mod0_paml {
     script:
     """
     #!/bin/bash
-    echo pamla
 
     cp ${baseDir}/data/PAML_CTLs/mod0.ctl .
     cp ${baseDir}/data/paml_tree.txt .

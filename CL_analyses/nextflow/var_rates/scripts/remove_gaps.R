@@ -14,7 +14,7 @@ species <- allignment[species_idx][1:(length(species_idx)-1)]
 #Abreviate species names to first character of first word and first four of second word, seperated by _
 for (i in 1:length(species)){
   split <- strsplit(species[i], "_")[[1]]
-  species[i] <- paste(substr(split[1], 1, 2), substr(split[2], 1, 4), sep = "_")
+  species[i] <- paste(substr(split[1], 1, 2), "_", substr(split[2], 1, 3), "  ", sep = "")
 }
 
 sequences <- allignment[-species_idx]

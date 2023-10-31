@@ -17,7 +17,12 @@ process remove_Ns {
     script:
     """
     #!/bin/bash
-    echo removable
+
+
+
     Rscript ${baseDir}/scripts/remove_Ns.R $phy
+
+
+
     """
 }

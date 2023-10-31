@@ -1,2 +1,2 @@
 4 1
-((P_colc,N_mele),A_plat,T_gutt);
+((P_col,N_mel),A_pla,T_gut);

@@ -70,6 +70,8 @@ Likewise some {data](https://github.com/petedprice/Avian_scRNAseq/tree/main/CL_a
 
 **[m1avsm2a](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/modules/m1avsm2a.nf)**
 - for every combination and subset of masking, models will be run and compared
+- Can alter the stock [file](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/data/PAML_CTLs/mod1a2a.ctl) to choose the models you want to compare. e.g. if you also want to run model 7 and 8 however model comparisons will vary downstream
+- To do: include extra model parameter flexilbity 
 
 **[comp_paml_models](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/modules/comp_paml_models.nf)**
 

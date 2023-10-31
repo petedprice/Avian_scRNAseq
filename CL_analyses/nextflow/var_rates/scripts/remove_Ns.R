@@ -1,9 +1,8 @@
 #!/usr/bin/env Rscript
-
 args <- commandArgs(trailingOnly = TRUE)
 
 phy_file = args[1]
-#phy_file = "data/VARIABLE_RATES/t7w15_t4w9/OG0004469_codon.nogaps_t7w15_t4w9.phy"
+#phy_file = "data/VARIABLE_RATES/NoNs/OG0003964_codon.nogaps_t7w15_t4w9_NoNs.phy"
 phy = readLines(phy_file)
 #get species which is the lines with names and not the A,C,T,G,N lines
 seq_info_line <- phy[1]
@@ -32,7 +31,7 @@ for (i in 1:length(species)){
   N_indx <- c(N_indx, N_tmp)
   seqs[[i]] <- seq2
 }
-
+species <- paste(species, "  ", sep = "")
 remove_ns <- function(x, N_indx){
   x[N_indx] <- ""
   x <- paste(x, collapse = "")
@@ -52,7 +51,11 @@ if (sum(unlist(NuNs)) > 0){
   stop("Ns still in seqs")
 }
 
-out_file <- phy[1]
+out_file <- strsplit(phy[1], " ")[[1]]
+
+out_file <- out_file[out_file != ""]
+out_file[2] <- lengths[1]
+out_file <- paste(out_file, collapse = " ")
 for (i in 1:length(species)){
   out_file <- c(out_file, species[i])
   #split seqs into groups of 60
@@ -63,13 +66,14 @@ for (i in 1:length(species)){
   out_file <- c(out_file, seqs_NoN_tmp)
 }
 
-
+  
 #writeLines(out_file, "data/VARIABLE_RATES/test_NoNs.phy")
 
 
 #change output name by putting a NoN before the .phy
 out_name <- gsub(".phy", "_NoNs.phy", phy_file)
 writeLines(out_file, out_name)
+
 
 
 
