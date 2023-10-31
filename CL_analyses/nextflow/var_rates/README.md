@@ -9,7 +9,7 @@ Likewise some [data](https://github.com/petedprice/Avian_scRNAseq/tree/main/CL_a
 
 
 User must have nextflow installed on their system to run. 
-Before running on the sheffield stanage system the following two commands are run 
+To run, the below example command may be used
 
 ```
 module load Nextflow/22.04.0
@@ -23,6 +23,31 @@ nextflow run /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var
 	-with-dag flowchat.png \
 	-with-trace
 ```
+
+# INPUT 
+
+**metadata**
+- two column csv file with species name (seperated parts by underscore) in first column and NCBI RefSeq assembly in second column
+
+**tree**
+- This is your nexus tree for running orthofinder 
+
+**paml_tree**
+- This is a reformatted tree for running paml, species names will be abreviated using the following [script](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/scripts/tree_sorting.R) (this wil also produce the branch file for SWAMP)
+
+
+**swamp_test_params**
+- Parameters to run through when testing SWAMP masking 
+
+
+**swamp_final_params**
+
+**swamp**
+- Either ```yes, no or checks```
+- yes: will run SWAMP once with a single set of paremeters and output masked allignements with Ns and once Ns are removed. PAML will be run on the N removed allignmenets
+- checks: will run SWAMP on all parameters combinations and output masked allignments. PAML will be run on allignements with Ns included 
+- no: will not mask
+
 
 # PIPELINE
 
