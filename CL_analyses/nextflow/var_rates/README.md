@@ -38,6 +38,7 @@ nextflow run /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var
 
 
 **swamp_final_params**
+- Final parameters to use with SWAMP. Masked regions will then be removed from the allignment 
 
 **swamp**
 - Either ```yes, no or checks```
