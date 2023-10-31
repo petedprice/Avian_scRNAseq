@@ -18,7 +18,6 @@ module load Anaconda3/2022.10
 nextflow run /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/main.nf \
 	--metadata /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/metadata_full.csv \
 	--tree /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/data/tree.txt \
-        --paml_tree /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/data/paml_tree.txt \
 	-resume \
 	-with-dag flowchat.png \
 	-with-trace
@@ -31,9 +30,7 @@ nextflow run /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var
 
 **tree**
 - This is your nexus tree for running orthofinder 
-
-**paml_tree**
-- This is a reformatted tree for running paml, species names will be abreviated using the following [script](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/scripts/tree_sorting.R) (this wil also produce the branch file for SWAMP)
+- This will be converted into a unrooted tree for PAML and branch file will be made from it for SWAMP 
 
 
 **swamp_test_params**

@@ -1,7 +1,12 @@
 nextflow.enable.dsl=2
 
+include { paml_tree } from './modules/paml_tree.nf'
+//include { swamp_branches } from './modules/swamp_branches.nf'
+
+
 include { get_refs } from './modules/get_refs.nf'
 include { longest_isoform } from './modules/longest_isoform.nf'
+
 include { orthofinder } from './modules/orthofinder.nf'
 include { ortho_cds } from './modules/ortho_cds.nf'
 
@@ -40,7 +45,9 @@ workflow {
                 .view()
 
     }
+ 
 
+    pamled_tree=paml_tree()
 
     species_ch=Channel
 	.fromPath(params.metadata)
@@ -63,14 +70,14 @@ workflow {
     phyed=prank_phy(No_gaps)
 
     if (params.swamp !="no"){
-	    mod0ed=mod0_paml(phyed)
+	    mod0ed=mod0_paml(phyed.combine(pamled_tree))
     }
 
 
     if(params.swamp == "checks"){
 	   swamped=swamp_test(mod0ed.combine(swamp_test_parameters))
 		.transpose()
-	   M1aM2aed=m1avsm2a(swamped)
+	   M1aM2aed=m1avsm2a(swamped.combine(pamled_tree))
                 .groupTuple(by: 1)
 
 	   top_mod=comp_paml_models(M1aM2aed)
@@ -78,12 +85,12 @@ workflow {
     } else if(params.swamp == "yes"){
 	   swamped=swamp_final(mod0ed.combine(swamp_final_parameters))
 	   NoNs=remove_Ns(swamped)
-           M1aM2aed=m1avsm2a(NoNs)
+           M1aM2aed=m1avsm2a(NoNs.combine(pamled_tree))
 		.groupTuple(by: 1)
            top_mod=comp_paml_models(M1aM2aed)
 
     } else if(params.swamp == "no"){
-           M1aM2aed=m1avsm2a(phyed)
+           M1aM2aed=m1avsm2a(phyed.combine(pamled_tree))
                 .groupTuple(by: 1)
            top_mod=comp_paml_models(M1aM2aed)	     
 

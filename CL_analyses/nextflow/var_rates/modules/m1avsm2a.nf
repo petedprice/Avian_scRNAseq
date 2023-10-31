@@ -5,10 +5,10 @@ process m1avsm2a {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
-    label 'python'
+    label 'R'
 
     input:
-    tuple file(phy), val(og)
+    tuple file(phy), val(og), file('tree_paml.txt')
     
     output:
     tuple file("*_paml_mod1a2a.txt"), env(sc)
@@ -16,13 +16,10 @@ process m1avsm2a {
     script:
     """
     #!/bin/bash
-
     cp ${baseDir}/data/PAML_CTLs/mod1a2a.ctl .
-    cp ${baseDir}/data/paml_tree.txt .
-
 
     sed -i 's/ALN/$phy/g' mod1a2a.ctl
-    sed -i 's/TREE/paml_tree.txt/g' mod1a2a.ctl
+    sed -i 's/TREE/tree_paml.txt/g' mod1a2a.ctl
     out="\$(basename /$phy .phy)"
 
     sed -i 's/OUT/paml_mod1a2a.txt/g' mod1a2a.ctl
