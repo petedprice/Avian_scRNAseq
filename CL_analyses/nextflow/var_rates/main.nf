@@ -69,6 +69,8 @@ workflow {
     No_gaps=remove_gaps(pranked_alligned)
     phyed=prank_phy(No_gaps)
 
+    
+
     if (params.swamp !="no"){
 	    mod0ed=mod0_paml(phyed.combine(pamled_tree))
     }
@@ -81,6 +83,7 @@ workflow {
                 .groupTuple(by: 1)
 
 	   top_mod=comp_paml_models(M1aM2aed)
+           //top_algns=return_top_algns(top_mod.combine(swamped.groupTuple(by: 0)))
 
     } else if(params.swamp == "yes"){
 	   swamped=swamp_final(mod0ed.combine(swamp_final_parameters))
@@ -88,6 +91,15 @@ workflow {
            M1aM2aed=m1avsm2a(NoNs.combine(pamled_tree))
 		.groupTuple(by: 1)
            top_mod=comp_paml_models(M1aM2aed)
+           /*
+	   combined=top_mod
+		.combine(swamped
+			.groupTuple(by: 0))
+		.combine(NoNs
+			.groupTuple(by: 0))
+		.view()
+ 	   */
+//top_algns=return_top_algns(top_mod.combine(swamped.groupTuple(by: 0)).combine(NoNs.groupTuple(by: 0)
 
     } else if(params.swamp == "no"){
            M1aM2aed=m1avsm2a(phyed.combine(pamled_tree))

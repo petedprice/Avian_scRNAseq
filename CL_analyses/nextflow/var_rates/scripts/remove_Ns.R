@@ -2,6 +2,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 phy_file = args[1]
+penalty=as.numeric(args[2])
 #phy_file = "data/VARIABLE_RATES/NoNs/OG0003964_codon.nogaps_t7w15_t4w9_NoNs.phy"
 phy = readLines(phy_file)
 #get species which is the lines with names and not the A,C,T,G,N lines
@@ -45,6 +46,11 @@ lengths <- lapply(seqs_NoN, nchar)
 if (length(unique(lengths)) > 1){
   stop("seqs not same length")
 }
+
+if (lengths[1] < penalty){
+	stop("seqs less than penalty length")
+}
+
 NuNs <- lapply(seqs_NoN, function(x) sum(strsplit(x, "")[[1]] == "N"))
 #if any Ns then stop 
 if (sum(unlist(NuNs)) > 0){

@@ -5,6 +5,7 @@ process swamp_test {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
+    tag {'swamp_test' + '_' + og }
 
     publishDir 'swamp_masked_allignments', mode: 'copy', overwrite: true, pattern: '*.phy'
 
@@ -30,26 +31,29 @@ process swamp_test {
 	-t $t1 -w $w1 -m 100 > ${og}_swamp_t${t1}w${w1}.txt
     mv tmp_swamp/${og}_codon.nogaps_masked.phy tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}.phy
     cp tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}.phy .
+    rm tmp_swamp/${og}_codon.nogaps.phy
     fi
 
     if [ $w2 != "null" ]; then
     python2.7 ${baseDir}/software/SWAMP/SWAMP.py -i tmp_swamp -b ${og}_SWAMP_BRANCHES.txt \
         -t $t2 -w $w2 -m 100 > ${og}_swamp_t${t1}w${w1}_t${t2}w${w2}.txt
-    mv tmp_swamp/${og}_codon.nogaps_masked.phy tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}.phy
+    mv tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_masked.phy tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}.phy
     cp tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}.phy .
+    rm tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}.phy
     fi   
 
     if [ $w3 != "null" ]; then
     python2.7 ${baseDir}/software/SWAMP/SWAMP.py -i tmp_swamp -b ${og}_SWAMP_BRANCHES.txt \
         -t $t3 -w $w3 -m 100 > ${og}_swamp_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}.txt
-    mv tmp_swamp/${og}_codon.nogaps_masked.phy tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}.phy
+    mv tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_masked.phy tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}.phy
     cp tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}.phy .
+    rm tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}.phy
     fi
 
     if [ $w4 != "null" ]; then
     python2.7 ${baseDir}/software/SWAMP/SWAMP.py -i tmp_swamp -b ${og}_SWAMP_BRANCHES.txt \
 	-t $t3 -w $w3 -m 100 > ${og}_swamp_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}_t${t4}w${w4}.txt
-    mv tmp_swamp/${og}_codon.nogaps_masked.phy tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}_t${t4}w${w4}.phy
+    mv tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}_masked.phy tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}_t${t4}w${w4}.phy
     cp tmp_swamp/${og}_codon.nogaps_t${t1}w${w1}_t${t2}w${w2}_t${t3}w${w3}_t${t4}w${w4}.phy .
     fi
 

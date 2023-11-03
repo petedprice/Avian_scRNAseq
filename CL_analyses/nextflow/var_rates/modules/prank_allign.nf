@@ -5,8 +5,9 @@ process prank_allign {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
+    tag {'prank_allign' + '_' + og }
+
     label 'prank'
-    //conda 'bioconda::prank'
 
     input:
     tuple file("${og}_fastas"), val(og)

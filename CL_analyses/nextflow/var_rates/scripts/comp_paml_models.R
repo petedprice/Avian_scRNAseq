@@ -46,7 +46,7 @@ for (i in 1:length(files)){
   model_data <- rbind(model_data, tmp_md)
 }
 model_data
-model_data$ln_dif <- model_data$Model_2_lnL - model_data$Model_1_lnL
+model_data$ln_dif <- 2*(model_data$Model_2_lnL - model_data$Model_1_lnL)
 model_data$pval <- unlist(lapply(model_data$ln_dif, pchisq, lower.tail = F, df = 2))
 #sort table with lowest p value first
 model_data <- model_data[order(model_data$pval),]

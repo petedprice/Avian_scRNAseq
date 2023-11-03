@@ -4,6 +4,8 @@ process remove_gaps {
     maxRetries 6
     memory { 1.GB * task.attempt }
 
+    tag {'remove_gaps' + '_' + og }
+
     label 'R'
 
     input:
@@ -15,6 +17,6 @@ process remove_gaps {
     script:
     """
     #!/bin/bash
-    Rscript ${baseDir}/scripts/remove_gaps.R ${og}_codon.best.fas 100 ${og}_codon.nogaps.fas
+    Rscript ${baseDir}/scripts/remove_gaps.R ${og}_codon.best.fas 300 ${og}_codon.nogaps.fas
     """
 }

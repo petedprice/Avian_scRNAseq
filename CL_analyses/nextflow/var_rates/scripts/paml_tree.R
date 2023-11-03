@@ -1,10 +1,10 @@
 #!/usr/bin/env Rscript
 args = commandArgs(trailingOnly=TRUE)
 
-#install.packages(c("ape"), lib = ".")
+install.packages(c("ape"), lib = ".")
 
-#library(ape, lib.loc = '.')
-library(ape)
+library(ape, lib.loc = '.')
+#library(ape)
 #trees <- read.nexus("data/VARIABLE_RATES/TREE_17102023/output.nex")
 #mcc <- maxCladeCred(trees)
 #mcc$node.label <- NULL

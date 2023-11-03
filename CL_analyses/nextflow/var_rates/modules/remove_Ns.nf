@@ -4,7 +4,9 @@ process remove_Ns {
     maxRetries 6
     memory { 1.GB * task.attempt }
 
-    publishDir 'swamp_masked_allignments', mode: 'copy', overwrite: true, pattern: '*NoNs.phy'
+    tag {'remove_Ns' + '_' + og }
+
+    publishDir 'NoNs_allignments', mode: 'copy', overwrite: true, pattern: '*NoNs.phy'
 
     label 'R'
 
@@ -17,10 +19,7 @@ process remove_Ns {
     script:
     """
     #!/bin/bash
-
-
-
-    Rscript ${baseDir}/scripts/remove_Ns.R $phy
+    Rscript ${baseDir}/scripts/remove_Ns.R $phy 300
 
 
 

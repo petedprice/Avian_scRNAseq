@@ -124,3 +124,12 @@ nextflow run /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var
 - For masked allignment run m1a and m2a models
 
 **[comp_paml_models](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/modules/comp_paml_models.nf)**
+
+
+# TO DO 
+- Push changes 
+- Include branch model 
+- Include M0 model on masked data
+- Compile M0, M1aM2a data into the comp models script 
+
+

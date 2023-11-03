@@ -5,6 +5,8 @@ process mod0_paml {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
+    tag {'swamp_branches' + '_' + og }
+
     input:
     tuple file("${og}_swamp_analysis"), val(og)
 

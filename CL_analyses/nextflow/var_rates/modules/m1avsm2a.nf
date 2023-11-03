@@ -5,13 +5,17 @@ process m1avsm2a {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
+    tag {'m1avsm2a' + '_' + og }
+
+    publishDir 'pergene_m1am2a_summaries', mode: 'copy', overwrite: true, pattern: '*_paml_mod1a2a.txt'
+
     label 'R'
 
     input:
     tuple file(phy), val(og), file('tree_paml.txt')
     
     output:
-    tuple file("*_paml_mod1a2a.txt"), env(sc)
+    tuple file("*_paml_mod1a2a.txt"), env(sc), file(phy)
  
     script:
     """
@@ -24,7 +28,7 @@ process m1avsm2a {
 
     sed -i 's/OUT/paml_mod1a2a.txt/g' mod1a2a.ctl
 
-    ${baseDir}/software/paml-4.10.7/bin/codeml mod1a2a.ctl
+    ${baseDir}/software/paml4.8/bin/codeml mod1a2a.ctl
     mv paml_mod1a2a.txt \${out}_paml_mod1a2a.txt
 
     sc=\${out#"${og}_codon.nogaps_"}

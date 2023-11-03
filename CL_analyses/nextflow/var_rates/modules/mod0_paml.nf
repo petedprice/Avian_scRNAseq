@@ -5,7 +5,9 @@ process mod0_paml {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
-    publishDir 'check_trees', mode: 'copy', overwrite: true, pattern: '*tree.txt'
+    tag {'mod0' + '_' + og }
+
+    publishDir 'check_trees', mode: 'copy', overwrite: true, pattern: '*SWAMP_BRANCHES.txt'
 
     label 'R'
 
@@ -25,7 +27,7 @@ process mod0_paml {
     sed -i 's/TREE/tree_paml.txt/g' mod0.ctl
     sed -i 's/OUT/${og}_mod0.txt/g' mod0.ctl
 
-    ${baseDir}/software/paml-4.10.7/bin/codeml mod0.ctl
+    ${baseDir}/software/paml4.8/bin/codeml mod0.ctl
 
     mkdir ${og}_swamp_analysis
     cp 2NG* ${og}_mod0.txt ${og}_codon.nogaps.phy rst rst1 rub lnf 4fold.nuc ${og}_swamp_analysis
