@@ -1,6 +1,0 @@
-Bootstrap: docker
-From: python:3.8-slim
-
-%post
-    apt-get update && apt-get install -y libgfortran5
-    pip install numpy scipy

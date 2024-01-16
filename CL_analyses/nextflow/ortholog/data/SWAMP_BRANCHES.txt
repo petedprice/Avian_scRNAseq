@@ -1,5 +1,0 @@
-5..6    P_colc,N_mele
-6..1    P_colc
-6..2    N_mele
-5..3    A_plat
-5..4    T_gutt

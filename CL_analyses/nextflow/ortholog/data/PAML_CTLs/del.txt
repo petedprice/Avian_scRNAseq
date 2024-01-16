@@ -1,5 +1,0 @@
-#sed -i 's/TREE/${baseDir/data/paml_tree.txt/' codeml-M0.ctl
-    #sed -i 's/OUT/${og}_mod0.txt/' codeml-M0.ctl
-
-    mkdir Model_M0
-    #/${baseDir}/software/paml-4.10.7/bin/codeml
