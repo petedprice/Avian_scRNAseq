@@ -15,7 +15,7 @@ process m1avsm2a {
     tuple file(phy), val(og), file('tree_paml.txt')
     
     output:
-    tuple file("*_paml_mod1a2a.txt"), env(sc), file(phy)
+    tuple file("*.txt"), env(sc)
  
     script:
     """
@@ -25,13 +25,12 @@ process m1avsm2a {
     sed -i 's/ALN/$phy/g' mod1a2a.ctl
     sed -i 's/TREE/tree_paml.txt/g' mod1a2a.ctl
     out="\$(basename /$phy .phy)"
+    sc=\${out#"${og}_codon.nogaps_"}
 
     sed -i 's/OUT/paml_mod1a2a.txt/g' mod1a2a.ctl
 
     ${baseDir}/software/paml4.8/bin/codeml mod1a2a.ctl
     mv paml_mod1a2a.txt \${out}_paml_mod1a2a.txt
-
-    sc=\${out#"${og}_codon.nogaps_"}
 
 
     """

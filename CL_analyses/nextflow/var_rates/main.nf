@@ -42,10 +42,11 @@ workflow {
                 .splitCsv()
                 .map {row -> tuple(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])}
                 .unique()
-                .view()
+		.view()
 
     }
- 
+
+
 
     pamled_tree=paml_tree()
 
@@ -81,6 +82,7 @@ workflow {
 		.transpose()
 	   M1aM2aed=m1avsm2a(swamped.combine(pamled_tree))
                 .groupTuple(by: 1)
+		.unique()
 
 	   top_mod=comp_paml_models(M1aM2aed)
            //top_algns=return_top_algns(top_mod.combine(swamped.groupTuple(by: 0)))

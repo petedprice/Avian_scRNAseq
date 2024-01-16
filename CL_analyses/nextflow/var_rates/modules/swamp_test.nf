@@ -5,7 +5,7 @@ process swamp_test {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
-    tag {'swamp_test' + '_' + og }
+    tag {'swamp_test' + '_' + og + 'w' + w1 + 't' + t1 + 'w'+ w2 + 't'+ t2 + 'w'+ w3 + 't'+ t3 + 'w'+ w4 + 't'+ t4}
 
     publishDir 'swamp_masked_allignments', mode: 'copy', overwrite: true, pattern: '*.phy'
 

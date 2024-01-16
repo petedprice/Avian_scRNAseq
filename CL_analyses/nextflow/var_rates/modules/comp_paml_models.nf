@@ -5,12 +5,14 @@ process comp_paml_models {
     maxRetries 6
     memory { 4.GB * task.attempt }
 
+    tag {'comp_paml_models' + '_' + sc }
+
     publishDir 'model_summaries', mode: 'copy', overwrite: true, pattern: '*_model_comparison.txt'
 
     label 'R'
 
     input:
-    tuple file("*_paml_mod1a2a.txt"), val(sc), file(phy)
+    tuple file(mod1a2a), val(sc)
     
     output:
     file("${sc}_model_comparison.txt")
