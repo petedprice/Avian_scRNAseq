@@ -60,12 +60,20 @@ seurat_SCT_normalised <- RunUMAP(seurat_SCT_normalised,
 seurat_SCT_normalised <- FindNeighbors(seurat_SCT_normalised, dims = 1:30, verbose = FALSE)
 seurat_SCT_normalised <- FindClusters(seurat_SCT_normalised, verbose = FALSE, resolution = 
                                         0.4)
-DimPlot(seurat_SCT_normalised)
-somatic = 0
-germ = 2
+DimPlot(seurat_SCT_normalised, label = T)
+somatic = c(7)
+germ = c(2,6,4,9)
+FeaturePlot(seurat_SCT_normalised, features = 'DAZL')
+germ_markers <- c("DAZL", "DDX4", "CLDN1", "DND1", "LOC101795050", "CARHSP1", "Vasa")
+FeaturePlot(seurat_SCT_normalised, germ_markers)
 
-seurat_SCT_normalised$cell_type <- "NULL"
-seurat_SCT_normalised$cell_type[seurat_SCT_normalised$SCT_snn_res.0.4 == 0] <- 'somatic'
-seurat_SCT_normalised$cell_type[seurat_SCT_normalised$SCT_snn_res.0.4 == 2] <- 'germ'
+somatic_markers <- c("POSTN", "LOC101798048", "SOX9", "DMRT1")
+
+FeaturePlot(seurat_SCT_normalised, somatic_markers)
+DimPlot(seurat_SCT_normalised, label = T)
+
+seurat_SCT_normalised$cell_type <- "germ"
+seurat_SCT_normalised$cell_type[seurat_SCT_normalised$SCT_snn_res.0.4 %in% somatic] <- 'somatic'
+seurat_SCT_normalised$cell_type[seurat_SCT_normalised$SCT_snn_res.0.4 %in% germ] <- 'germ'
 
 DimPlot(seurat_SCT_normalised, group.by ='cell_type')

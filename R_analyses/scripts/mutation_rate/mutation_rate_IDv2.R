@@ -1,12 +1,14 @@
 library(future)
 library(future.apply)
 library(tidyverse)
+library(ggpubr)
+
 plan("multicore", workers = 28)
 
-snp_info <- read.table("data/NC_051788.1_fin_snp_read.txt.gz", comment.char = "") %>% 
+snp_info <- read.table("data/send_snps/apls12_snps.txt.gz", comment.char = "") %>% 
   as.data.frame()
-snp_info <- read.table("./fin_snp_read.txt.gz", comment.char = "") %>% 
-  as.data.frame()
+#snp_info <- read.table("./fin_snp_read.txt.gz", comment.char = "") %>% 
+#  as.data.frame()
 
 dim(snp_info)
 colnames(snp_info) <- c("Read-Name", "Barcode",  "Flag",  "MAPQ", "CHROM",  
@@ -15,45 +17,27 @@ colnames(snp_info) <- c("Read-Name", "Barcode",  "Flag",  "MAPQ", "CHROM",
 
 snp_info$`REF-POS1` <- as.numeric(snp_info$`REF-POS1`)
 snp_info <- snp_info[is.na(snp_info$`REF-POS1`) == F,]
+dim(snp_info)
+snp_info$`READ-QUAL` <- sapply(snp_info$`READ-QUAL`, utf8ToInt) 
+snp_info$`READ-BASE` <- toupper(snp_info$`READ-BASE`)
+snp_info$`REF-BASE` <- toupper(snp_info$`REF-BASE`)
 
-head(snp_info)
+snp_info <- snp_info %>% 
+  filter(`READ-QUAL` > 62)
+dim(snp_info)
 
-snps <- unique(snp_info$`REF-POS1`)
 
-start_time <- Sys.time()
-snp_summarise <- snp_info[which(snp_info$`REF-POS1` %in% snps),] %>% 
+snp_summarise <- snp_info %>% 
   group_by(Barcode, `REF-POS1`) %>% 
-  reframe(refn = length(which(`READ-BASE` == `REF-BASE`)),
+  reframe(refn = length(which(`READ-BASE` == `REF-BASE`)), 
           altn = length(which(`READ-BASE` != `REF-BASE`)), 
-          CHROM = `CHROM`[1])
+          CHROM = `CHROM`[1], 
+          ref = `REF-BASE`[1], 
+          alt = `READ-BASE`[1]) %>% 
+  rename(pos = `REF-POS1`)
 
-end_time <- Sys.time()
-start_time-end_time
+
 dim(snp_summarise)
-
-
-
-
-var_sum <- function(pos, snp_info){
-  sumup <- snp_info %>%  
-    filter(`REF-POS1` == pos) %>% 
-    group_by(Barcode) %>% 
-    reframe(refn = length(which(`READ-BASE` == `REF-BASE`)),
-              altn = length(which(`READ-BASE` != `REF-BASE`)), 
-              pos = `REF-POS1`[1], 
-              CHROM = `CHROM`[1])
-    return(sumup)
-}
-
-
-start_time <- Sys.time()
-snp_summarise_temp <- lapply(snps, 
-                                       var_sum,  snp_info = snp_info)
-end_time <- Sys.time()
-start_time-end_time
-snp_summarise <- do.call(rbind, snp_summarise_temp)
-dim(snp_summarise)
-
 
 somatic = c(0,3,7)
 FeaturePlot(seurat_SCT_normalised, features = 'DAZL')
@@ -61,7 +45,7 @@ seurat_SCT_normalised$cell_type <- "germ"
 seurat_SCT_normalised$cell_type[seurat_SCT_normalised$SCT_snn_res.0.4 %in% somatic] <- 'somatic'
 #seurat_SCT_normalised$cell_type[seurat_SCT_normalised$SCT_snn_res.0.4 %in% germ] <- 'germ'
 
-snp_summarise <- read.table("data/snps_summarise.txt.gz")
+snp_summarise2 <- read.table("data/snps_summarise.txt.gz")
 snp_summarise <- snp_summarise %>% merge(seurat_SCT_normalised@meta.data[,c('cells', 'cell_type')], 
                             by.x = 'Barcode', by.y = "cells")
 
