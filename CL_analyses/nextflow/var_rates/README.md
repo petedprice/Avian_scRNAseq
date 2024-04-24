@@ -100,7 +100,8 @@ nextflow run /users/bop20pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var
 - User can state as many parameter mixes as needed on new lines in the input file
 - Fill blanks with null
 
-**[m1avsm2a](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/modules/m1avsm2a.nf)**
+**[m1avsm2a] (https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/modules/m1avsm2a.nf)** 
+- Site model comparisons: m1a is nearly neutral and m2a is positive selection
 - for every combination and subset of masking, models will be run and compared
 - Can alter the stock [file](https://github.com/petedprice/Avian_scRNAseq/blob/main/CL_analyses/nextflow/var_rates/data/PAML_CTLs/mod1a2a.ctl) to choose the models you want to compare. e.g. if you also want to run model 7 and 8 however model comparisons will vary downstream
 - To do: include extra model parameter flexilbity 
