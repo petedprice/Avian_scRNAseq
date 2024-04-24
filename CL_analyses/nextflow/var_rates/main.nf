@@ -1,6 +1,8 @@
 nextflow.enable.dsl=2
 
 include { paml_tree } from './modules/paml_tree.nf'
+include { paml_branch_tree } from './modules/paml_branch_tree.nf'
+
 //include { swamp_branches } from './modules/swamp_branches.nf'
 
 
@@ -19,6 +21,7 @@ include { remove_Ns } from './modules/remove_Ns.nf'
 
 include { mod0_paml } from './modules/mod0_paml.nf'
 include { m1avsm2a } from './modules/m1avsm2a.nf'
+include { branch_model } from './modules/branch_model.nf'
 include { comp_paml_models } from './modules/comp_paml_models.nf'
 
 include { swamp_test } from './modules/swamp_test.nf'
@@ -47,19 +50,24 @@ workflow {
     }
 
 
-
+    
     pamled_tree=paml_tree()
+    pamled_branch_tree=paml_branch_tree()
 
-    species_ch=Channel
-	.fromPath(params.metadata)
-	.splitCsv()
-	.map {row -> tuple(row[0], row[1])}
-	.unique()
+
+    if (params.sequence_source == "ncbi"){
+    	species_ch=Channel
+		.fromPath(params.metadata)
+		.splitCsv()
+		.map {row -> tuple(row[0], row[1])}
+		.unique()
 
     //Channels sample name and species name
 
     //Get's list of contig names, in:species, ref ;out:species, contig.txt
-    seqs=get_refs(species_ch)
+    	seqs=get_refs(species_ch)
+    }
+
     longest=longest_isoform(seqs).collect()
     orthofound=orthofinder(longest)
     of_cds=ortho_cds(orthofound)
@@ -93,7 +101,14 @@ workflow {
            M1aM2aed=m1avsm2a(NoNs.combine(pamled_tree))
 		.groupTuple(by: 1)
            top_mod=comp_paml_models(M1aM2aed)
-           /*
+           
+
+           branch_modeled=branch_model(NoNs.combine(pamled_branch_tree))
+                .groupTuple(by: 1)
+           top_mod_branch=comp_paml_models(branch_modeled)
+
+
+	   /*
 	   combined=top_mod
 		.combine(swamped
 			.groupTuple(by: 0))

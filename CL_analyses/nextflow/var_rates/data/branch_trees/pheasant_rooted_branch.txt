@@ -1,0 +1,1 @@
+(((Phasianus_colchicus#1:32.84448835,Numida_meleagris:32.84448835)#1:43.70282961,Anas_platyrhynchos:76.54731797):19.83211966,Taeniopygia_guttata:96.37943762);

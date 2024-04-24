@@ -15,16 +15,14 @@
         icode = 0              * Genetic code 
     cleandata = 0              * Remove sites with ambiguity data?
 		
-        model = 0         * Models for ω varying across lineages
-	  NSsites = 1 2          * Models for ω varying across sites
+        model = 2         * Models for ω varying across lineages
+	  NSsites = 2          * Models for ω varying across sites
         Mgene = 0
                    * codon: 0:rates, 1:separate; 2:diff pi, 3:diff kapa, 4:all diff
                    * AA: 0:rates, 1:separate
     CodonFreq = 7        * Codon frequencies
 	  estFreq = 0        * Use observed freqs or estimate freqs by ML
         clock = 0          * Clock model
-    fix_omega = 0         * Estimate or fix omega
-        omega = 0.4        * Initial or fixed omega
 
 fix_kappa = 0  * 1: kappa fixed, 0: kappa to be estimated
         kappa = 2  * initial or fixed kappa
@@ -40,3 +38,5 @@ fix_kappa = 0  * 1: kappa fixed, 0: kappa to be estimated
  RateAncestor = 1  * (0,1,2): rates (alpha>0) or ancestral states (1 or 2)
 
    Small_Diff = .5e-6
+
+
