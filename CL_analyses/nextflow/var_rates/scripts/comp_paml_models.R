@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 #Compare PAML models
 args <- commandArgs(trailingOnly = TRUE)
-files=list.files(args[1], pattern = "paml_mod", full.names = T)
+files=list.files(args[1], pattern = "paml", full.names = T)
 nmods=args[2]
 
 #files=list.files("data/VARIABLE_RATES/paml_output/", full.names = T)

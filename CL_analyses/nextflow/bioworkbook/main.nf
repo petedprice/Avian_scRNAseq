@@ -15,6 +15,9 @@ include { seurat_markers } from './modules/seurat/seurat_markers.nf'
 include { seurat_mutation } from './modules/seurat/seurat_mutation.nf'
 include { seurat_doublet } from './modules/seurat/seurat_doublet.nf'
 
+//angsd
+include { angsd } from './modules/angsd.nf'
+
 params.seurat_etc="leave"
 
 workflow {
@@ -55,6 +58,11 @@ workflow {
 	//if cellranger data pre made then run as so 
 	//splitted=nocellranger_split_bam(samples_ch)
         splitted=nocellranger_split_bam(samples_ch.combine(cns, by:0))
+    }
+
+    if(angsd == 'TRUE'){
+	//RUN ANGSD PIPELINE
+	angsded=angsd(counted.groupTuple(by:0))
     }
  
 	        
