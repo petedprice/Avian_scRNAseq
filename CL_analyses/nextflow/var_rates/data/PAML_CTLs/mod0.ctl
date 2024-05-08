@@ -8,7 +8,6 @@
                    * 3: StepwiseAddition; (4,5):PerturbationNNI; -2: pairwise
 
       seqtype = 1              * Data type
-    CodonFreq = 2  * 0:1/61 each, 1:F1X4, 2:F3X4, 3:codon table
 
         ndata = 1           * Number of data sets or loci
        aaDist = 0  * 0:equal, +:geometric; -:linear, 1-6:G1974,Miyata,c,p,v,a

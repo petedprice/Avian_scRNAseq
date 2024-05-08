@@ -2,12 +2,9 @@
 args = commandArgs(trailingOnly=TRUE)
 
 install.packages(c("ape"), lib = ".")
-
 library(ape, lib.loc = '.')
-library(ape)
 
 trees <- list.files(args[1], full.names = T, pattern = 'rooted')
-trees <- list.files("data/VARIABLE_RATES/branch_model_trees/", full.names = T, pattern = 'rooted')
 dir.create("paml_branch_trees")
 
 tree_branch_function <- function(x){
@@ -28,7 +25,7 @@ tree_branch_function <- function(x){
     paml_tree$tip.label[i]  <- newname
   }
   outfile1 = strsplit(x, "/")[[1]]
-  outfile2 = paste0("branch_trees/", outfile1[length(outfile1)])
+  outfile2 = paste0("paml_branch_trees/", outfile1[length(outfile1)])
   paml_tree_name <- gsub("rooted_branch.txt", "paml_branch.txt", outfile2)
   
   write.tree(paml_tree, paml_tree_name)

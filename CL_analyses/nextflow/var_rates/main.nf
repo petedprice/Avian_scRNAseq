@@ -98,9 +98,9 @@ workflow {
     } else if(params.swamp == "yes"){
 	   swamped=swamp_final(mod0ed.combine(swamp_final_parameters))
 	   NoNs=remove_Ns(swamped)
-           M1aM2aed=m1avsm2a(NoNs.combine(pamled_tree))
-		.groupTuple(by: 1)
-           top_mod=comp_paml_models(M1aM2aed)
+           //M1aM2aed=m1avsm2a(NoNs.combine(pamled_tree))
+	//	.groupTuple(by: 1)
+           //top_mod=comp_paml_models(M1aM2aed)
            
 
            branch_modeled=branch_model(NoNs.combine(pamled_branch_tree))
