@@ -27,7 +27,7 @@ include { comp_paml_models } from './modules/comp_paml_models.nf'
 include { swamp_test } from './modules/swamp_test.nf'
 include { swamp_final } from './modules/swamp_final.nf'
 
-
+include { get_omega } from './modules/get_omega.nf'
 
 
 workflow {
@@ -105,8 +105,7 @@ workflow {
 
            branch_modeled=branch_model(NoNs.combine(pamled_branch_tree))
                 .groupTuple(by: 1)
-           top_mod_branch=comp_paml_models(branch_modeled)
-
+	   //branch_omegas=get_omega(branch_modeled)
 
 	   /*
 	   combined=top_mod

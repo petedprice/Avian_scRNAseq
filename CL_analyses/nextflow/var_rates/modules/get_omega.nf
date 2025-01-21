@@ -1,4 +1,4 @@
-process comp_paml_models {
+process get_omega {
 
     cpus { 1 * task.attempt }
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
@@ -20,7 +20,6 @@ process comp_paml_models {
     script:
     """
     #!/bin/bash
-
     Rscript ${baseDir}/scripts/comp_paml_models.R . 2 ${sc}_model_comparison.txt
 
     """

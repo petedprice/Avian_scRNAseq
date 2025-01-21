@@ -15,7 +15,7 @@
     cleandata = 0              * Remove sites with ambiguity data?
 		
         model = 2         * Models for ω varying across lineages
-	  NSsites = 0          * Models for ω varying across sites
+	  NSsites = 2          * Models for ω varying across sites
         Mgene = 0
                    * codon: 0:rates, 1:separate; 2:diff pi, 3:diff kapa, 4:all diff
                    * AA: 0:rates, 1:separate
