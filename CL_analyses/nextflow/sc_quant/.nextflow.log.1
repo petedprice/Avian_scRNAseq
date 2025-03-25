@@ -1,0 +1,79 @@
+Jan-23 12:49:16.974 [main] DEBUG nextflow.cli.Launcher - $> nextflow run /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/main.nf --cellranger /users/bi1pp/software/cellranger-9.0.0/cellranger --metadata /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/md_ss.csv --read_dir /mnt/parscratch/users/bi1pp/Avian_sc_quant/reads --with-trace -resume
+Jan-23 12:49:17.025 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 22.04.0
+Jan-23 12:49:17.038 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/nextflow.config
+Jan-23 12:49:17.039 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/nextflow.config
+Jan-23 12:49:17.056 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+Jan-23 12:49:17.563 [main] INFO  nextflow.cli.CmdRun - Launching `/users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/main.nf` [nasty_bose] DSL2 - revision: 2cc4756917
+Jan-23 12:49:17.572 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/users/bi1pp/.nextflow/plugins; core-plugins: nf-amazon@1.7.1,nf-azure@0.13.1,nf-console@1.0.3,nf-ga4gh@1.0.3,nf-google@1.1.4,nf-sqldb@0.4.0,nf-tower@1.4.0
+Jan-23 12:49:17.574 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Jan-23 12:49:17.582 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Jan-23 12:49:17.583 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Jan-23 12:49:17.585 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+Jan-23 12:49:17.592 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Jan-23 12:49:17.629 [main] DEBUG nextflow.Session - Session uuid: e353ad87-bbd1-43ac-91a0-7bf7ef382928
+Jan-23 12:49:17.629 [main] DEBUG nextflow.Session - Run name: nasty_bose
+Jan-23 12:49:17.630 [main] DEBUG nextflow.Session - Executor pool size: 64
+Jan-23 12:49:17.658 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 22.04.0 build 5697
+  Created: 23-04-2022 18:00 UTC (19:00 BST)
+  System: Linux 3.10.0-1160.125.1.el7.x86_64
+  Runtime: Groovy 3.0.10 on OpenJDK 64-Bit Server VM 11.0.16+8
+  Encoding: UTF-8 (UTF-8)
+  Process: 34686@login2.pri.stanage.alces.network [10.10.7.2]
+  CPUs: 64 - Mem: 1007.2 GB (444.8 GB) - Swap: 7.9 GB (7.5 GB)
+Jan-23 12:49:17.689 [main] DEBUG nextflow.Session - Work-dir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/work [nfs]
+Jan-23 12:49:17.690 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/bin
+Jan-23 12:49:17.701 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Jan-23 12:49:17.711 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Jan-23 12:49:17.737 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Jan-23 12:49:17.747 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 65; maxThreads: 1000
+Jan-23 12:49:17.838 [main] DEBUG nextflow.Session - Session start invoked
+Jan-23 12:49:18.034 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Jan-23 12:49:18.554 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-23 12:49:18.554 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-23 12:49:18.561 [main] DEBUG nextflow.executor.Executor - [warm up] executor > slurm
+Jan-23 12:49:18.565 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'slurm' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+Jan-23 12:49:18.568 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'slurm' > queue-stat-interval: 1m
+Jan-23 12:49:18.620 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-23 12:49:18.620 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-23 12:49:18.627 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-23 12:49:18.627 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-23 12:49:18.643 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-23 12:49:18.643 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-23 12:49:18.646 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: get_mt_genes, cellranger_mkref, seurat_SCT_integrate, get_refs, cellranger_count, seurat_filter, seurat_doublet
+Jan-23 12:49:18.646 [main] DEBUG nextflow.Session - Ignite dataflow network (6)
+Jan-23 12:49:18.653 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > get_refs
+Jan-23 12:49:18.654 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > get_mt_genes
+Jan-23 12:49:18.655 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > cellranger_mkref
+Jan-23 12:49:18.656 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > cellranger_count
+Jan-23 12:49:18.657 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+Jan-23 12:49:18.657 [main] DEBUG nextflow.Session - Session await
+Jan-23 12:49:18.908 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process get_refs (3) > jobId: 5049233; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/work/7e/a48a267913f833e2647d63d531c1cd
+Jan-23 12:49:18.909 [Task submitter] INFO  nextflow.Session - [7e/a48a26] Submitted process > get_refs (3)
+Jan-23 12:49:18.931 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process get_refs (1) > jobId: 5049234; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/work/8f/a2f40bce79c98896711f7f4ee5ba9e
+Jan-23 12:49:18.931 [Task submitter] INFO  nextflow.Session - [8f/a2f40b] Submitted process > get_refs (1)
+Jan-23 12:49:18.951 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process get_refs (2) > jobId: 5049235; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/sc_quant/work/5c/0f9522eb0f36328f5f895fd8611087
+Jan-23 12:49:18.952 [Task submitter] INFO  nextflow.Session - [5c/0f9522] Submitted process > get_refs (2)
+Jan-23 12:49:31.131 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+Jan-23 12:49:31.144 [SIGINT handler] DEBUG nextflow.Session - The following nodes are still active:
+[process] get_mt_genes
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] cellranger_mkref
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] cellranger_count
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+Jan-23 12:49:31.145 [main] DEBUG nextflow.Session - Session await > all process finished
+Jan-23 12:49:31.146 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Jan-23 12:49:31.159 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (3)
+Jan-23 12:49:31.181 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=3; succeedDuration=0ms; failedDuration=0ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=3; peakCpus=3; peakMemory=12 GB; ]
+Jan-23 12:49:31.395 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Jan-23 12:49:31.402 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
