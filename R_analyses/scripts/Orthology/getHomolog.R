@@ -34,7 +34,7 @@ for (x in RDatas){
   print(length(genes[[si_tmp$species]]))
 }
 
-markers <- read.csv("data/markers/markers_del.csv")
+markers <- read.csv("data/markers/markers.csv")
 
 markers$marker[markers$marker %in% genes$duck == F]
 markers$marker[markers$marker %in% genes$pheasant == F]

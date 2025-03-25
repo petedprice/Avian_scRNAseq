@@ -1,3 +1,5 @@
+SCENIC
+SCENIC/data
 .Rproj.user
 .Rhistory
 .RData
@@ -7,3 +9,5 @@ R_analyses/outdata
 R_analyses/plots
 R_analyses/R_analyses.Rproj
 local_pipeline_tests
+CL_analyses/nextflow/sc_quant/work
+R_analyses/MARKDOWN/data

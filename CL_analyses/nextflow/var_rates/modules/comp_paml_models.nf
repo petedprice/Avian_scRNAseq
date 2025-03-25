@@ -15,11 +15,12 @@ process comp_paml_models {
     tuple file(mod1a2a), val(sc)
     
     output:
-    file("${sc}_model_comparison.txt")
+    file("*${sc}_*")
  
     script:
     """
     #!/bin/bash
+
     Rscript ${baseDir}/scripts/comp_paml_models.R . 2 ${sc}_model_comparison.txt
 
     """

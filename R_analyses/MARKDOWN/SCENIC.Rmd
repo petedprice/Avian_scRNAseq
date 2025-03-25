@@ -1,0 +1,411 @@
+---
+title: "SCENIC"
+author: "PP"
+date: "2025-03-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## SCENIC
+
+```{r packages echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
+
+library(Seurat)
+library(tidyverse)
+library(Matrix)
+library(scales)
+library(cowplot)
+library(RCurl)
+library(stringr)
+library(ggpubr)
+library(RColorBrewer)
+library(clustree)
+library(lme4)
+library(scuttle)
+library(edgeR)
+library(scran)
+library(gridExtra)
+library(plyranges) 
+library(rtracklayer)
+library(gplots)
+library(SeuratDisk)
+```
+
+**Ortholog data download**
+
+```{bash}
+#Get orthoDB data for birds, chicken and mouse
+wget https://data.orthodb.org/v12/download/odb12v0_OG2genes.tab.gz
+zcat odb12v0_OG2genes.tab.gz | grep at1549675 | grep -f bird_species.txt > data/bird_species_orthos.txt
+zcat odb12v0_OG2genes.tab.gz | grep at32523 | grep -f hum_mouse_bird_species.txt > data/hum_mouse_bird_species_orthos.txt
+
+wget https://data.orthodb.org/v12/download/odb12v0_OG2genes.tab.gz -P data
+gunzip data/odb12v0_OG2genes.tab.gz
+awk -F'[:\t]' 'NR==FNR {keep[$1]; next} $1 in keep' data/hum_mouse_bird_species.txt data/odb12v0_genes.tab > data/all_genes.txt
+
+
+#Download reference genome data from NCBI 
+#wget 
+#wget
+
+```
+
+```{r}
+library(tidyverse)
+library(rtracklayer)
+
+ortho_file <- read.table("../SCENIC/data/all_genes.tsv", quote = "",  stringsAsFactors = FALSE, sep = '\t')
+colnames(ortho_file) <- c("orthodb_geneid", "orthodb_orgid", "protein_id", "synonyms", "uniprot_id",
+                          "ensembl_ids", "NCBI_gid", "description", "coords", "DNA_id", "chromosome")
+
+species_df <- data.frame(orthodb_orgid = c('8839_0', '8996_0', '9054_0', '9031_0', '9606_0', '10090_0'), 
+                         species = c("Duck", "Guineafowl", "Pheasant", "Chicken", "Human", "Mouse"), 
+                         latin = c("Anas_platyrhynchos", "Numida_meleagris", "Phasianus_colchicus", "Gallus_gallus", "", ""))
+
+
+ortho_file <- ortho_file %>% 
+  merge(species_df)
+
+bird_OGs <- read.table("../SCENIC/data/bird_species_orthos.txt")
+colnames(bird_OGs) <- c("Bird_cluster", "orthodb_geneid")
+bird_mam_OGs <- read.table("../SCENIC/data/hum_mouse_bird_species_orthos.txt")
+colnames(bird_mam_OGs) <- c("Vert_cluster", "orthodb_geneid")
+
+ortho_file <- ortho_file %>% 
+  merge(bird_OGs, all = T) %>% 
+  merge(bird_mam_OGs, all = T)
+
+gffs <- list.files("data/VARIABLE_RATES/gffs", full.names = T, pattern = ".gff")
+
+tmp_ofgff <- list()
+for (i in 1:3){
+  gff <- gffs[grep(species_df[i,3], gffs)]
+  z <- import(gff) %>% as.data.frame()
+  z2 <- z %>%  filter(type %in% c("CDS")) %>% 
+    dplyr::select(gene, type, Dbxref, protein_id) %>% 
+    unique()
+  species_of <- ortho_file[ortho_file$species == species_df[i,2],]
+  gene_ID_df = data.frame(gff_genes  = z2$gene,
+                          protein_id = z2$protein_id, 
+                          species = species_df[i,2]) %>% 
+    merge(species_of, all.y = T)
+  print(dim(species_of))
+  print(dim(gene_ID_df))
+  
+  tmp_ofgff[[i]] <- gene_ID_df
+}
+
+OF_GFF <- do.call(rbind, tmp_ofgff) %>% 
+  bind_rows(ortho_file[ortho_file$species %in% c("Human", "Mouse", "Chicken"),])
+
+write.table(OF_GFF, file = "data/OrthoDB_GFF_orthologs.csv")
+
+OF_GFF <- read.table("../../R_analyses/data/OrthoDB_GFF_orthologs.csv")
+
+
+
+
+```
+
+**TF data download and create cluster-buster motif file from JASPAR data**
+
+``` {bash}
+pwd
+#Download from AnimalTFDB v4.0
+#wget https://guolab.wchscu.cn/AnimalTFDB4_static/download/TF_list_final/Gallus_gallus_TF -P data
+#wget https://guolab.wchscu.cn/AnimalTFDB4_static/download/TF_list_final/Anas_platyrhynchos_platyrhynchos_TF -P data
+
+#Download from JASPAR 
+wget https://jaspar.elixir.no/download/data/2024/CORE/JASPAR2024_CORE_vertebrates_non-redundant_pfms_jaspar.txt -P data
+wget https://jaspar.elixir.no/download/data/2024/CORE/JASPAR2024_CORE_vertebrates_redundant_pfms_jaspar.txt -P data
+wget https://jaspar.elixir.no/download/data/2024/collections/JASPAR2024_UNVALIDATED_non-redundant_pfms_jaspar.txt -P data 
+#conda create  -n motifs -c conda-forge BioPython=1.78
+#conda activate motifs
+#python
+```
+
+In python Convert to cluster-buster format
+
+```{python}
+from Bio import motifs
+import os
+from pathlib import Path
+
+with open("data/JASPAR2024_UNVALIDATED_non-redundant_pfms_jaspar.txt", 'rt') as fh:
+  jms = motifs.parse(fh, "JASPAR")
+        
+outdir=Path('data/motifs_cb_format_unvalidated/')
+os.makedirs(outdir, exist_ok=True)
+
+for jm in jms:
+        motiffile = outdir.joinpath(str(jm.matrix_id) + '.cb')
+        with open(motiffile, 'wt') as fh:
+                fh.write(format(jm, "clusterbuster"))
+```
+
+List of motifs
+
+```{bash}
+ls data/motifs_cb_format/ | sed 's/\.cb//g' > data/motifs.lst 
+```
+
+
+```{r}
+cb_files <- list.files("data/motifs_cb_format/", full.names = F)
+motifs_data <- lapply(cb_files, function(x){return(c(x, 
+                                                     gsub(">", "", 
+                                                          readLines(paste0("data/motifs_cb_format/", x))[1]))
+                                                   )
+  }) %>% 
+  do.call(rbind,.) %>% 
+  as.data.frame()
+
+colnames(motifs_data) <- c("cb_motif", "TF")
+
+
+TFs <- paste(motifs_data$TF, collapse = "|")
+match <- OF_GFF[apply(OF_GFF, 1, function(x)(any(x %in% motifs_data$TF))),]
+
+intersect(motifs_data$TF, Chicken_TFs$Symbol)
+
+Chicken_TFs <- read.table('data/Gallus_gallus_TF.txt', sep = '\t', header = TRUE)
+
+
+```
+
+
+
+**Per gene up/downstream region**
+```{bash}
+
+wget {link_to_ref.fasta}
+wget {link_to_ref.gtf}
+
+conda create -n agat bioconda::agat
+conda activate agat 
+
+agat_sp_extract_sequences.pl --gff {ref.gtf} --fasta {ref.fasta} \
+  -t gene --up "5000" --down "1000" \. #NEED TO CHECK IF THESE ARE APPROPRIATE PARAMAETERS
+  --full \
+  -o test_TSS.fasta 
+
+conda deactivate
+
+```
+
+
+
+
+
+*Read in R object*
+
+```{r seurat_object_load echo = FALSE, message = FALSE, warning = FALSE,  results = 'hide'}
+
+setwd("~/Documents/Science_Work/PhD/Projects/2023/Variables_rates/Avian_scRNAseq/R_analyses/")
+
+sample_info <- read.csv("data/metadata_full.csv", header = F) 
+colnames(sample_info) <- c('sample', "species", "ed", "sex", "folder", 'ref', "mito")
+sample_info$stage <- "EARLY"
+sample_info$stage[sample_info$ed %in% c("ED24", "ED22", "ED25")] <- "LATE"
+markers <- read.csv("data/markers/markers.csv") %>% 
+  filter(Use == "Yes")
+RDatas <- list.files("data/seur_objs/integrated/", full.names = T, pattern = ".RData")
+load("data/seur_obj_celltype_metadata.RData")
+i = 11
+load(RDatas[[i]])
+#seurat_integrated@meta.data <- save_seurats[[i]]
+#Idents(seurat_integrated) <- 'celltype'
+DefaultAssay(seurat_integrated) <- "RNA"
+seurat_integrated <- JoinLayers(seurat_integrated)
+
+```
+
+*Output csv file of gene counts matrix*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r csv seurat_out}
+
+csv_file <- seurat_integrated@assays$RNA$counts[,1:200] %>% 
+  as.data.frame()
+
+write.table(csv_file, "~/Documents/Science_Work/PhD/Projects/2023/Variables_rates/Avian_scRNAseq/SCENIC/data/seurat.csv", sep = ',', row.names = T, col.names = T, quote = F)
+
+tfs <- read.table(
+  "~/Documents/Science_Work/PhD/Projects/2023/Variables_rates/Avian_scRNAseq/SCENIC/data/Gallus_gallus_TF.txt", 
+  sep = '\t', header = TRUE) %>%
+  filter(Symbol != "") %>% 
+  filter(!is.na(Entrez_ID)) %>% 
+  mutate(Entrez_ID = paste0("LOC", Entrez_ID)) %>% 
+  mutate(Symbol = ifelse(Symbol == "", Entrez_ID, Symbol))
+
+tfs2 <- tfs %>% 
+  filter(Symbol %in% rownames(seurat_integrated@assays$RNA))
+
+new_tfs <- intersect(toupper(tfs2$Symbol), rownames(tsv_file))
+length(new_tfs)
+
+write.table(new_tfs, "~/Documents/Science_Work/PhD/Projects/2023/Variables_rates/Avian_scRNAseq/SCENIC/data/mm_tfs.txt", sep = '\t', row.names = F, col.names = F, quote = F)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{bash}
+cd ~/Documents/Science_Work/PhD/Projects/2023/Variables_rates/Avian_scRNAseq/SCENIC/
+
+docker run -p 8888:8888 --platform linux/amd64 -v ~/Documents/Science_Work/PhD/Projects/2023/Variables_rates/Avian_scRNAseq/SCENIC/data:/data aertslab/pyscenic_scanpy:0.12.1_1.9.1 \
+  pyscenic grn \
+  -o data/out.csv --num_workers 6 -m grnboost2 \
+  -t \
+  data/seurat.csv data/mm_tfs.txt
+        
+
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r GRN reading, eval = FALSE}
+
+grn_out <- read.csv("~/Documents/Science_Work/PhD/Projects/2023/Variables_rates/Avian_scRNAseq/SCENIC/data/out.csv", header = T)
+head(grn_out)
+
+
+```
+
+ **Generating TF binding database**
+
+Before running the next section of pySCENIC we need to generate cisTarget_databases which seems quite complicated...
+
+This is essentially a motif x gene matrix, with a ranking score representing the presence of the motif in the regions associated with the gene.
+
+**FASTA_FILE**
+
+1.  For each gene take either the space upstream of the TSS (with or without introns, exons, UTRS or a downstream region)
+2.  Default region size for drosophila is 5kb upstream and full length transcript. For mouse and human it's 10kb up and 10kb downstream of the TSS.
+3.  For Chicken, blog post recommended 5kb upstream of all genes
+
+
+
+
+
+**cisTarget motif database (USE INSTEAD OF TRACK DATABASE)** Following this: <https://github.com/aertslab/create_cisTarget_databases/blob/master/README.md>
+
+The motif dir will need renaming to allow for orthology between chicken and each species.
+
+```{bash}
+"${create_cistarget_databases_dir}/create_cistarget_motif_databases.py" \
+    -f "${fasta_filename}" \
+    -M "${motifs_dir}" \
+    -m "${motifs_list_filename}" \
+    -o "${db_prefix}" \
+    -t "${nbr_threads}"
+```
+
+-   fasta_file: fasta file with sequence per gene ID (I think with the surrounding sequence of the TSS): check lengths needed.
+
+-   motif_dir: path to Cluster-Buster motifs
+
+This function can be split into sections if memory requirements are restrictive
+
+### 
+
+```{bash, eval = FALSE}
+
+cd /mnt/parscratch/users/bi1pp/Avian_SCENIC
+git clone https://github.com/aertslab/create_cisTarget_databases
+cd create_cisTarget_databases
+
+# Download precompiled Cluster-Buster binary.
+wget https://resources.aertslab.org/cistarget/programs/cbust
+
+# Make downloaded binary executable.
+chmod a+x cbust
+ 
+wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver
+
+# Download bigWigAverageOverBed.
+wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bigWigAverageOverBed
+
+# Make downloaded binaries executable.
+chmod a+x liftOver bigWigAverageOverBed
+   
+```
+
+**Create the following singularity recipe**
+
+```         
+BootStrap: docker From: python:3.10
+
+%post \# Update package lists and install required dependencies apt-get update && apt-get install -y\
+python-pip\
+python3-dev\
+&& rm -rf /var/lib/apt/lists/\*
+
+\```         
+# Upgrade pip
+pip install --upgrade pip
+
+# Install required Python packages
+pip install \
+    "numpy>=1.22" \
+    "pandas>=1.4.1" \
+    "pyarrow>=7.0.0" \
+    "numba>=0.55.1" \
+    "flatbuffers"
+\```
+
+%environment \# Set environment variables export PATH="/usr/local/bin:\$PATH" export PYTHONUNBUFFERED=1
+
+%runscript \# Default command when the container is run /bin/bash
+```
+
+```{bash}
+
+cd /mnt/parscratch/users/bi1pp/Avian_SCENIC
+mkdir docker 
+singularity pull docker://frolvlad/alpine-glibc:alpine-3
+
+touch CTD_recipe
+singularity build CTD.simg CTD_recipe 
+
+```
+
+```{bash}
+singularity exec CTD.simg python 
+```

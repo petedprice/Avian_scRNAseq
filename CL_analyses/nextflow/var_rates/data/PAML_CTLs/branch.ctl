@@ -2,13 +2,12 @@
      treefile = TREE            * Path to the tree file
       outfile = OUT            * Path to the output file
    
-        noisy = 9              * How much rubbish on the screen
-      verbose = 2              * More or less detailed report
+        noisy = 3              * How much rubbish on the screen
+      verbose = 1              * More or less detailed report
       runmode = 0  * 0: user tree;  1: semi-automatic;  2: automatic
                    * 3: StepwiseAddition; (4,5):PerturbationNNI; -2: pairwise
 
       seqtype = 1              * Data type
-    CodonFreq = 2  * 0:1/61 each, 1:F1X4, 2:F3X4, 3:codon table
 
         ndata = 1           * Number of data sets or loci
        aaDist = 0  * 0:equal, +:geometric; -:linear, 1-6:G1974,Miyata,c,p,v,a
@@ -16,7 +15,7 @@
     cleandata = 0              * Remove sites with ambiguity data?
 		
         model = 2         * Models for ω varying across lineages
-	  NSsites = 2          * Models for ω varying across sites
+	  NSsites = 0          * Models for ω varying across sites
         Mgene = 0
                    * codon: 0:rates, 1:separate; 2:diff pi, 3:diff kapa, 4:all diff
                    * AA: 0:rates, 1:separate

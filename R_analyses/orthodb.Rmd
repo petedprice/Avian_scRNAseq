@@ -1,0 +1,78 @@
+---
+title: "OrthoDB_orthology"
+author: "PP"
+date: "2025-03-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+species_id, species, latin
+8839_0,Anas_platyrhynchos,Duck
+8996_0,Numida_meleagris,Guineafowl
+9054_0,Phasianus_colchicus,Pheasant
+9031_0,Gallus_gallus,Chicken 
+9606_0,,Human
+10090_0,,Mouse
+
+OrthoDB group
+1549675: Galloanserae 
+
+```{bash}
+#Get orthoDB data for birds, chicken and mouse
+wget https://data.orthodb.org/v12/download/odb12v0_OG2genes.tab.gz
+zcat odb12v0_OG2genes.tab.gz | grep at1549675 | grep -f bird_species.txt > bird_species_orthos.txt
+zcat odb12v0_OG2genes.tab.gz | grep at32523 | grep -f hum_mouse_bird_species.txt > hum_mouse_bird_species_orthos.txt
+
+wget https://data.orthodb.org/v12/download/odb12v0_OG2genes.tab.gz
+gunzip odb12v0_OG2genes.tab.gz
+awk -F'[:\t]' 'NR==FNR {keep[$1]; next} $1 in keep' hum_mouse_bird_species.txt odb12v0_genes.tab > all_genes.txt
+
+
+#Download reference genome data from NCBI 
+#wget 
+#wget 
+
+```
+
+```{r}
+library(tidyverse)
+library(rtracklayer)
+
+ortho_file <- read.table("../SCENIC/data/all_genes.tsv", quote = "",  stringsAsFactors = FALSE, sep = '\t')
+colnames(ortho_file) <- c("orthodb_geneid", "orthodb_orgid", "protein_id", "synonyms", "uniprot_id",
+                          "ensembl_ids", "NCBI_gid", "description", "coords", "DNA_id", "chromosome")
+
+# add species as in above chunk 
+species_df <- data.frame(orthodb_orgid = c('8839_0', '8996_0', '9054_0', '9031_0', '9606_0', '10090_0'), 
+                         species = c("Duck", "Guineafowl", "Pheasant", "Chicken", "Human", "Mouse"), 
+                         latin = c("Anas_platyrhynchos", "Numida_meleagris", "Phasianus_colchicus", "Gallus_gallus", "", ""))
+                         
+
+ortho_file <- ortho_file %>% 
+  merge(species_df)
+
+bird_OGs <- read.table("../SCENIC/data/bird_species_orthos.txt")
+colnames(bird_OGs) <- c("Bird_cluster", "orthodb_geneid")
+bird_mam_OGs <- read.table("../SCENIC/data/hum_mouse_bird_species_orthos.txt")
+colnames(bird_mam_OGs) <- c("Vert_cluster", "orthodb_geneid")
+
+ortho_file <- ortho_file %>% 
+  merge(bird_OGs, all = T) %>% 
+  merge(bird_mam_OGs, all = T)
+
+gffs <- list.files("data/VARIABLE_RATES/gffs", full.names = T, pattern = ".gff")
+for (i in 1:3){
+  gff <- gffs[grep(species_df[i,3], gffs)]
+  z <- import(gff) %>% as.data.frame()
+  z2 <- z %>%  filter(type == "gene")
+  gene_ID_df = data.frame(genes  = z2$gene,
+                          ID = z2$Dbxref %>% unlist() %>% gsub("GeneID:", "", .))
+  gene_ID_df$species <- species_df[i,2]
+  
+}
+
+
+```

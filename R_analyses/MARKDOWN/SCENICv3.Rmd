@@ -1,0 +1,485 @@
+---
+title: "SCENICv3"
+author: "PP"
+date: "2025-03-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# SCENIC Pipeline
+
+## **Orthology**
+
+### *Data download*
+
+```{bash}
+mkdir data lib data/CTD_databases data/CTD_databases/partial data/CTD_databases/combined scripts scripts/slurm_out
+
+#Get orthoDB data for birds, chicken and mouse
+wget https://data.orthodb.org/v12/download/odb12v0_OG2genes.tab.gz -P data
+wget https://data.orthodb.org/v12/download/odb12v0_genes.tab.gz -P data
+gunzip data/odb12v0_OG2genes.tab.gz
+gunzip data/odb12v0_genes.tab.gz
+
+printf "8839_0\n8996_0\n9054_0\n9031_0\n9606_0\n10090_0" > data/hum_mouse_bird_species.txt
+
+cat data/odb12v0_OG2genes.tab | grep at1549675 | \
+  grep -e  8839_0 -e 8996_0 -e 9054_0 -e 9031_0 \
+  > data/bird_species_orthos.txt
+  
+cat data/odb12v0_OG2genes.tab | grep at1549675 | \
+  grep -e  8839_0 -e 8996_0 -e 9054_0 -e 9031_0 -e 9606_0 -e 10090_0 \
+  > data/hum_mouse_bird_species_orthos.txt
+  
+awk -F'[:\t]' 'NR==FNR {keep[$1]; next} $1 in keep' data/hum_mouse_bird_species.txt data/odb12v0_genes.tab > data/all_genes.txt
+
+
+#Download reference genome data from NCBI 
+#Mallard
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/015/476/345/GCF_015476345.1_ZJU1.0/GCF_015476345.1_ZJU1.0_genomic.gff.gz \
+  -O data/Duck.gff.gz
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/015/476/345/GCF_015476345.1_ZJU1.0/GCF_015476345.1_ZJU1.0_genomic.fna.gz \
+  -O data/Duck.fna.gz
+
+
+
+#Pheasant
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/143/745/GCF_004143745.1_ASM414374v1/GCF_004143745.1_ASM414374v1_genomic.gff.gz \
+  -O data/Pheasant.gff.gz
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/143/745/GCF_004143745.1_ASM414374v1/GCF_004143745.1_ASM414374v1_genomic.fna.gz \
+  -O data/Pheasant.fna.gz
+
+#Guineafowl 
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/078/875/GCF_002078875.1_NumMel1.0/GCF_002078875.1_NumMel1.0_genomic.gff.gz \
+  -O data/Guineafowl.gff.gz
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/078/875/GCF_002078875.1_NumMel1.0/GCF_002078875.1_NumMel1.0_genomic.fna.gz \
+  -O data/Guineafowl.fna.gz
+
+#Chicken 
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.gff.gz \
+  -O data/Chicken.gff.gz
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.fna.gz \
+  -O data/Chicken.fna.gz
+
+
+```
+
+### *Data sorting*
+
+```{r}
+#singularity exec docker://rocker/tidyverse R
+
+if (file.exists("lib/rtracklayer") == F){
+  install.packages("BiocManager", lib = './lib')
+  BiocManager::install("rtracklayer", lib = './lib')
+}
+
+library(tidyverse)
+library(rtracklayer, lib = './lib')
+
+ggid <- function(x){
+  out <- x[[1]][grep("GeneID", x[[1]])] %>% 
+    gsub("GeneID:", "", .)
+  if (length(out) == 0){
+    return("")
+  } else {
+    return(out)
+  }
+}
+
+
+ortho_file <- read.table("data/all_genes.txt", quote = "",  stringsAsFactors = FALSE, sep = '\t')
+colnames(ortho_file) <- c("orthodb_geneid", "orthodb_orgid", "protein_id", "synonyms", "uniprot_id",
+                          "ensembl_ids", "NCBI_gid", "description", "coords", "DNA_id", "chromosome")
+
+species_df <- data.frame(orthodb_orgid = c('8839_0', '8996_0', '9054_0', '9031_0', '9606_0', '10090_0'), 
+                         species = c("Duck", "Guineafowl", "Pheasant", "Chicken", "Human", "Mouse"), 
+                         latin = c("Anas_platyrhynchos", "Numida_meleagris", "Phasianus_colchicus", "Gallus_gallus", "", ""), 
+                         ref = c("GCF_015476345.1", "GCF_002078875.1", 
+                         "GCF_004143745.1", "GCF_016699485.2", "", ""))
+
+ortho_file <- ortho_file %>% 
+  merge(species_df)
+
+
+
+
+bird_OGs <- read.table("data/bird_species_orthos.txt")
+colnames(bird_OGs) <- c("Bird_cluster", "orthodb_geneid")
+bird_mam_OGs <- read.table("data/hum_mouse_bird_species_orthos.txt")
+colnames(bird_mam_OGs) <- c("Vert_cluster", "orthodb_geneid")
+
+ortho_file <- ortho_file %>% 
+  merge(bird_OGs, all = T) %>% 
+  merge(bird_mam_OGs, all = T)
+
+gffs <- list.files("data", full.names = T, pattern = ".gff")
+
+tmp_ofgff <- list()
+for (i in 1:4){
+  gff <- gffs[grep(species_df[i,2], gffs)]
+  z <- import(gff) %>% as.data.frame()
+  z2 <- z %>%  filter(type %in% c("CDS")) %>% 
+    dplyr::select(gene, type, Dbxref, protein_id) %>% 
+    unique()
+  species_of <- ortho_file[ortho_file$species == species_df[i,2],]
+  gene_ID_df = data.frame(gff_genes  = z2$gene,
+                          protein_id = z2$protein_id, 
+                          species = species_df[i,2], 
+                          GeneID = lapply(z2$Dbxref, ggid) %>% unlist()) %>% 
+    merge(species_of, all.y = T)
+  print(dim(species_of))
+  print(dim(gene_ID_df))
+  
+  tmp_ofgff[[i]] <- gene_ID_df
+}
+
+OF_GFF <- do.call(rbind, tmp_ofgff) %>% 
+  bind_rows(ortho_file[ortho_file$species %in% c("Human", "Mouse"),])
+
+write.table(OF_GFF, file = "data/OrthoDB_GFF_orthologs.csv")
+
+quit()
+```
+
+## **Generating cisTarget motif database**
+
+Before running the SCENIC we need to generate cisTarget_databases, specifically for the second step.
+
+This is essentially a motif x gene matrix, with a ranking score representing the presence of the motif in the regions associated with the gene.
+
+Following this: <https://github.com/aertslab/create_cisTarget_databases/blob/master/README.md>
+
+This function can be split into sections if memory requirements are restrictive
+
+### *Download git repository and required software*
+
+```{bash, eval = FALSE}
+
+git clone https://github.com/aertslab/create_cisTarget_databases
+cd create_cisTarget_databases
+
+wget https://resources.aertslab.org/cistarget/programs/cbust
+chmod a+x cbust
+ 
+wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver
+wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bigWigAverageOverBed
+chmod a+x liftOver bigWigAverageOverBed
+cd ../
+   
+```
+
+### *Singularity image for running* create_cisTarget_database
+
+Create the following singularity recipe and save as create_cisTarget_databases/CTD_recipe
+
+```         
+BootStrap: docker
+From: python:3.10
+
+%post
+    # Update package lists and install required dependencies
+    apt-get update && apt-get install -y \
+        python3-pip \
+        python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+    # Upgrade pip
+    pip install --upgrade pip
+
+    # Install required Python packages
+    pip install \
+        "numpy>=1.22" \
+        "pandas>=1.4.1" \
+        "pyarrow>=7.0.0" \
+        "numba>=0.55.1" \
+        "flatbuffers"
+
+%environment
+    # Set environment variables
+    export PATH="/usr/local/bin:$PATH"
+    export PYTHONUNBUFFERED=1
+    export PATH=/mnt/parscratch/users/bi1pp/Avian_SCENIC2/create_cisTarget_databases:$PATH #Sub out your path instead of mine 
+
+%runscript
+    # Default command when the container is run
+    /bin/bash
+```
+
+```{bash}
+#singularity pull docker://frolvlad/alpine-glibc:alpine-3
+nano create_cisTarget_databases/CTD_recipe #and paste in above 
+singularity build create_cisTarget_databases/CTD.sif create_cisTarget_databases/CTD_recipe 
+mkdir data/CTD_databases
+```
+
+### 
+
+### ***Motif collection downloaded from SCENIC+ database***
+
+```{bash}
+pwd
+#Download Chicken TFs from AnimalTFDB v4.0
+wget https://guolab.wchscu.cn/AnimalTFDB4_static/download/TF_list_final/Gallus_gallus_TF -P data
+
+# Download cbust motifs from SCENIC+ database
+wget https://resources.aertslab.org/cistarget/motif_collections/v10nr_clust_public/v10nr_clust_public.zip -P data
+unzip data/v10nr_clust_public.zip
+mv v10nr_clust_public data
+ls data/v10nr_clust_public/singletons | sed 's/\.cb//g' > data/motifs.lst 
+head -200 data/motifs.lst > data/ss_motifs.lst
+
+```
+
+### ***Modify the motif collection for each target species***
+
+**Using the orthology from OrthoDB, identify the relevant orthologs for each transcription factor and modify the chicken motif annotation file**
+
+```{r}
+#singularity exec docker://rocker/tidyverse R
+
+library(tidyverse)
+
+OF_GFF <- read.table(file = "data/OrthoDB_GFF_orthologs.csv")
+motif_data <- read.table("data/v10nr_clust_public/snapshots/motifs-v10-nr.chicken-m0.00001-o0.0.tbl", sep = '\t', 
+                   header = T, comment.char="")
+unique(motif_data$gene_name)  %>% length()
+
+OF_GFF_chicken <- filter(OF_GFF, species == "Chicken" & 
+                           (gff_genes %in% motif_data$gene_name)) %>% 
+  filter(!is.na(Bird_cluster)) %>% 
+    dplyr::select(gff_genes, Bird_cluster, GeneID, species) %>% 
+    unique()
+unique(OF_GFF_chicken$gff_genes)  %>% length()
+
+species_motif_data <- list()
+for (sp in c("Duck", "Guineafowl", "Pheasant")){
+  OF_GFF_sp <- filter(OF_GFF, species == sp,
+                      Bird_cluster %in% OF_GFF_chicken$Bird_cluster) %>% 
+    dplyr::select(gff_genes, Bird_cluster, GeneID, species) %>% 
+    unique()
+  tmp1 <- merge(OF_GFF_sp, OF_GFF_chicken, by = 'Bird_cluster', suffixes = c("_tmp", "_Chicken"), all = F)
+  dup1 <- tmp1$GeneID_Chicken[duplicated(tmp1$GeneID_Chicken)]
+  dup2 <- tmp1$GeneID_tmp[duplicated(tmp1$GeneID_tmp)]
+  tmp2 <- filter(tmp1, GeneID_Chicken %in% dup1 | 
+                  GeneID_tmp %in% dup2) %>% 
+    filter(gff_genes_tmp == gff_genes_Chicken)
+
+  mgd <- rbind(tmp2, filter(tmp1, !(GeneID_Chicken %in% dup1) & 
+                             !(GeneID_tmp %in% dup2)))
+  
+  genes <- mgd[,"gff_genes_tmp"]
+  names(genes) <- mgd$gff_genes_Chicken
+  
+  species_motif_data[[sp]] <- motif_data %>% 
+    mutate(gene_name = genes[gene_name]) %>% 
+    filter(!is.na(gene_name))
+  print(length(unique(species_motif_data[[sp]]$gene_name)))
+  colnames(species_motif_data[[sp]])[1] <- '#motif_id'
+  write.table(species_motif_data[[sp]], file = paste0('data/', sp, "_motifs.tbl"), sep = '\t', col.names = T, quote = F, row.names = F)
+  
+}
+
+quit()
+```
+
+### **Create FASTA including up/downstream regions**
+
+1.  For each gene take either the space upstream of the TSS (with or without introns, exons, UTRS or a downstream region)
+2.  Default region size for drosophila is 5kb upstream and full length transcript. For mouse and human it's 10kb up and 10kb downstream of the TSS.
+3.  For Chicken, blog post recommended 5kb upstream of all genes
+
+```{bash}
+
+conda create -y -n agat bioconda::agat
+conda activate agat 
+
+
+#gunzip data/*fna.gz
+#gunzip data/*gff.gz
+
+for ref in Duck Pheasant Guineafowl 
+do 
+echo $ref
+agat_sp_extract_sequences.pl --gff data/${ref}*gff --fasta data/${ref}*fna \
+  -t gene --up "5000" --down "1000" --full -o data/tmp_${ref}_5000up_1000down_TSS.fasta
+
+sed 's/>gene-/>/g' data/tmp_${ref}_5000up_1000down_TSS.fasta > data/${ref}_5000up_1000down_TSS.fasta
+
+agat_sp_extract_sequences.pl --gff data/${ref}*gff --fasta data/${ref}*fna \
+  -t gene --up "500" --down "100" --full -o data/tmp_${ref}_500up_100down_TSS.fasta
+sed 's/>gene-/>/g' data/tmp_${ref}_500up_100down_TSS.fasta > data/${ref}_500up_100down_TSS.fasta
+
+
+done
+rm data/tmp*
+
+#gzip data/*fna
+#gzip data/*gff
+
+conda deactivate
+
+```
+
+### ***Create database*** using below script
+
+```{bash}
+#Part 1.
+mkdir data/CTD_databases/partial
+
+#### SCRIPT ####
+
+#!/bin/bash
+#SBATCH --mem=128G
+#SBATCH --cpus-per-task=22
+#SBARCH --workdir=/mnt/parscratch/users/bi1pp/Avian_SCENIC2 
+#SBATCH --time=08:00:00
+#SBATCH --output=/mnt/parscratch/users/bi1pp/Avian_SCENIC2/scripts/slurm_out
+
+ref=$1
+nbr_threads=22
+part=$2
+
+cd /mnt/parscratch/users/bi1pp/Avian_SCENIC2 #Change to your directory 
+
+singularity exec create_cisTarget_databases/CTD.sif \
+  create_cisTarget_databases/create_cistarget_motif_databases.py \
+      -f data/${ref}_5000up_1000down_TSS.fasta \
+      -M data/v10nr_clust_public/singletons \
+      -m data/motifs.lst \
+      -o data/CTD_databases/partial/${ref}_motif_db \
+      -t ${nbr_threads} \
+      -p ${part} 250
+      
+#######################
+
+#### SUBMIT ####
+for p in {1..250}; do sbatch CTD.slurm Guineafowl $p; done
+
+
+#Part 2.
+mkdir data/CTD_databases/combined
+
+singularity exec create_cisTarget_databases/CTD.sif \
+  create_cisTarget_databases/combine_partial_motifs_or_tracks_vs_regions_or_genes_scores_cistarget_dbs.py \
+  -i data/CTD_databases/partial/ \
+    -o  data/CTD_databases/combined
+    
+#rm data/CTD_databases/partial/*
+
+
+#Part 3. 
+singularity exec create_cisTarget_databases/CTD.sif \
+  create_cisTarget_databases/convert_motifs_or_tracks_vs_regions_or_genes_scores_to_rankings_cistarget_dbs.py \
+  --db data/CTD_databases/combined/${ref}_motif_db.motifs_vs_regions.scores.feather
+  
+
+```
+
+-   -f fasta_file: fasta file with sequence per gene ID
+-   -M motif_dir: path to Cluster-Buster motifs
+
+## **SCENIC Part 1: GRN**
+
+*Read in R object*
+
+```{r seurat_object_load echo = FALSE, message = FALSE, warning = FALSE,  results = 'hide'}
+
+#singularity exec docker://satijalab/seurat:5.0.0 R
+
+library(Seurat)
+library(dplyr)
+species = "Guineafowl"
+obj_path = "/mnt/parscratch/users/bi1pp/Avian_sc_quant/seurat_objects/Guineafowl_F_ED19_integrated_seurat.RData"
+
+load(obj_path)
+DefaultAssay(seurat_integrated) <- "RNA"
+seurat_integrated <- JoinLayers(seurat_integrated)
+counts <- seurat_integrated@assays$RNA$counts %>% 
+  as.data.frame()
+
+write.table(counts, paste0("data/", species, "_seurat_counts.csv"), sep = ',', row.names = T, col.names = T, quote = F)
+
+
+sp_motif_data <- read.table(paste0("data/", species, "_motifs.tbl"), 
+                  sep = '\t', header = T, comment.char="") 
+
+tfs <- intersect(sp_motif_data$gene_name, rownames(seurat_integrated@assays$RNA))
+tfs <- unique(sp_motif_data$gene_name)
+write.table(tfs, paste0("data/", species, "_mm_tfs.txt"), sep = '\t', row.names = F, col.names = F, quote = F)
+quit()
+```
+
+```{bash}
+mkdir SCENIC
+singularity build SCENIC/aertslab-pyscenic-scanpy-0.12.1-1.9.1.sif docker://aertslab/pyscenic_scanpy:0.12.1_1.9.1
+```
+
+```{bash}
+
+### BELOW SCRIPT ###
+
+#!/bin/bash
+#SBATCH --mem=256
+#SBATCH --cpus-per-task=32
+#SBARCH --workdir=/mnt/parscratch/users/bi1pp/Avian_SCENIC2 
+#SBATCH --output=/mnt/parscratch/users/bi1pp/Avian_SCENIC2/scripts/slurm_out
+
+cd /mnt/parscratch/users/bi1pp/Avian_SCENIC2 
+
+species=$1
+nbr_threads=16
+singularity run -B $PWD/data:/data SCENIC/aertslab-pyscenic-scanpy-0.12.1-1.9.1.sif \
+        pyscenic grn \
+        --num_workers $nbr_threads \
+        -o /data/${species}_expr_mat.adjacencies.tsv \
+        -m grnboost2 -t \
+        data/${species}_seurat_counts.csv \
+        data/${species}_mm_tfs.txt
+        
+######################
+
+sbatch script.slurm Guineafowl
+```
+
+## **SCENIC Part 2: CTX**
+
+```{bash}
+#!/bin/bash
+#SBATCH --mem=1028G
+#SBATCH --cpus-per-task=16
+#SBARCH --workdir=/mnt/parscratch/users/bi1pp/Avian_SCENIC2 
+#SBATCH --output=/mnt/parscratch/users/bi1pp/Avian_SCENIC2/scripts/slurm_out
+
+cd /mnt/parscratch/users/bi1pp/Avian_SCENIC2 
+
+species=$1
+nbr_threads=16
+singularity run -B $PWD/data:/data SCENIC/aertslab-pyscenic-scanpy-0.12.1-1.9.1.sif \
+        pyscenic ctx \
+        data/${species}_expr_mat.adjacencies.tsv \
+        data/CTD_databases/combined/${species}_motif_db.regions_vs_motifs.rankings.feather \
+        --annotations_fname data/${species}_motifs.tbl \
+        --output /data/regulons.csv \
+        --num_workers ${nbr_threads} \
+        -t \
+       --expression_mtx_fname /data/${species}_seurat_counts.csv 
+
+```
+
+## **SCENIC Part 3: AUCELL**
+
+```{bash}
+singularity run -B $PWD/data:/data SCENIC/aertslab-pyscenic-scanpy-0.12.1-1.9.1.sif \
+        pyscenic aucell \
+        /data/${species}_seurat_counts.csv \
+        /data/regulons.csv \
+        -o /data/auc_mtx.csv \
+        --num_workers 1
+        -t
+???????????????????????????????????????????/
+
+```

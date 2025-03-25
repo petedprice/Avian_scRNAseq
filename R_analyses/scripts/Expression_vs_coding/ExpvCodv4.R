@@ -16,6 +16,7 @@ library(scran)
 library(scater)
 library(gridExtra)
 library(ggpubr)
+library(gplots)
 
 sample_info <- read.csv("data/SAMPLE_INFO/metadata.csv", header = F) 
 colnames(sample_info) <- c('sample', "species", 'ref', "sex", "ed")
@@ -29,15 +30,15 @@ load_func <- function(x){
   return(seurat_marker)
 }
 
-RDatas <- list.files("data/seurat_RData/", full.names = T)
-load(RDatas[5])
-obj1 <- seurat_marker
+RDatas <- list.files("data/seur_objs/integrated/", full.names = T)
+load(RDatas[1])
+obj1 <- seurat_integrated
 load(RDatas[2])
-obj2 <- seurat_marker
+obj2 <- seurat_integrated
 load(RDatas[3])
-obj3 <- seurat_marker
+obj3 <- seurat_integrated
 load(RDatas[4])
-obj4 <- seurat_marker
+obj4 <- seurat_integrated
 
 seurat_marker <- merge(x = obj1, y = c(obj2, obj3, obj4))
 metadata <-  merge(seurat_marker@meta.data, sample_info, by = 'sample', sort = F)
@@ -126,6 +127,8 @@ tau <- function(gene, cpm, y){
 }
 
 taus <- do.call(rbind, lapply(rownames(cpm), tau, cpm = cpm, y = y))
+taus <- as.data.frame(taus)
+write.csv(taus, "data/VARIABLE_RATES/taus.csv", row.names = F, quote = T)
 #############################################
 
 

@@ -8,4 +8,6 @@ hum_chick_orthologs %>% head()
 chicken_markers <- hum_chick_orthologs %>% merge(Human_cc, by.x = 'Primary.Ensembl.ID', by.y = 'geneID') %>% 
   select(c('Ortholog.symbol','phase')) %>% 
   rename('gene' = 'Ortholog.symbol')
-write.table(chicken_markers, "data/markers/cellcycle_markers/chicken_cellcycle.csv")
+write.table(chicken_markers, "data/markers/cellcycle_markers/chicken_cellcycle.csv", 
+            row.names = F, col.names = F, sep = ',', quote = F
+            )

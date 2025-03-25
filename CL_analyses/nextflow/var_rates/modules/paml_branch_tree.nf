@@ -16,9 +16,7 @@ process paml_branch_tree {
     """
     #!/bin/bash
     cp ${params.tree} tree.txt
-
     Rscript ${baseDir}/scripts/paml_branch_model_trees.R ${params.branch_trees}
-
     """
 }
 
