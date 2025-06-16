@@ -13,6 +13,12 @@ include { seurat_SCT_integrate as seurat_SCT_integrate2 } from './modules/seurat
 include { seurat_SCT_integrate as seurat_SCT_integrate3 } from './modules/seurat/seurat_SCT_integrate.nf'
 include { seurat_SCT_integrate as seurat_SCT_integrate4 } from './modules/seurat/seurat_SCT_integrate.nf'
 
+
+//SCENIC
+include { orthodb } from './modules/SCENIC_orthos/orthodb.nf'
+include { ortho_gff } from './modules/SCENIC_orthos/ortho_gff.nf'
+include { chicken_seqs } from './modules/SCENIC_orthos/chicken_seqs.nf'
+
 workflow {
     //Channels species name and reference name
     species_ch=Channel
@@ -35,7 +41,7 @@ workflow {
 	.fromPath(params.metadata)
 	.splitCsv()
 	.map {row -> tuple(row[1], row[0])}
-
+/*
     //make cellranger index
     ref_made=cellranger_mkref(seqs)
 
@@ -51,9 +57,7 @@ workflow {
 		.combine(counted, by: [0,1])
 
     //READ IN CELLRANGER DATA AND FILTER SEURAT OBJECTS
-    seurat_filtered=seurat_filter(sex_stage_ch)
-
-    
+    seurat_filtered=seurat_filter(sex_stage_ch)    
 
     //REMOVE DOUBLETS 
     seurat_doubleted=seurat_doublet(seurat_filtered)
@@ -80,6 +84,21 @@ workflow {
             seurat_doubleted.groupTuple(by: [0])
 	       	.map { id -> tuple(id[0], "MIXED",  "MIXED", id[3])}
     )
+*/
+
+
+   // SCENIC WORKFLOW //
+   gffs=chicken_seqs().combine(
+		seqs.map { id -> (id[2])}.collect()
+	)
+
+   orthodbs=orthodb()
+
+   ortho_gffed=ortho_gff(
+	orthodbs.combine(gffs)
+	)
+ 
+
 
 
 }
