@@ -1,30 +1,28 @@
 
 process aucell {
 
-    cpus { 8 * task.attempt }
-    errorStrategy 'retry'
-    maxRetries 6
-    memory { 84.GB * task.attempt }    
-    
+    cpus { 60 * task.attempt }
+    memory { 1999.GB * task.attempt }
+    time = '48h'
     label 'SCENIC'
 
     publishDir 'seurat_objects', mode: 'copy', overwrite: true, pattern: '*RData'
 
     input: 
-    tuple val(species),  val(stage), val(sex), file("${species}_${sex}_${stage}_regulons.csv"), file("${species}_${sex}_${stage}_counts.csv")
+    tuple val(species),  file("${species}_regulons.csv"), file("${species}_counts.csv")
 
     output:
-    tuple val(species),  val(stage), val(sex), file("${species}_${sex}_${stage}_regulons.csv")
+    tuple val(species),  file("${species}_regulons.csv")
     
     script:
 
     """
     #!/bin/bash
     pyscenic aucell \
-        ${species}_${sex}_${stage}_seurat_counts.csv \
-        ${species}_${sex}_${stage}_regulons.csv \
-        -o ${species}_${sex}_${stage}_auc_mtx.csv \
-        --num_workers 1
+        ${species}_counts.csv \
+        ${species}_regulons.csv \
+        -o ${species}_auc_mtx.csv \
+        --num_workers $task.cpus \
         -t
 
 

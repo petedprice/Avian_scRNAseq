@@ -52,7 +52,7 @@ workflow {
 
     //make cellranger index
     ref_made=cellranger_mkref(seqs)
-/*
+
     //Quantifies cellranger data, in:species, species_cr_ref, sample; out: species, sample, bam, bam_index
     counted=cellranger_count(ref_made.combine(samples_ch, by: 0))
    
@@ -71,8 +71,8 @@ workflow {
     seurat_doubleted=seurat_doublet(seurat_filtered)
 
     //INTEGRATE
-    seurat_integrated=seurat_SCT_integrate(seurat_doubleted.groupTuple(by: [0,1,2]))
-*/
+    //seurat_integrated=seurat_SCT_integrate(seurat_doubleted.groupTuple(by: [0,1,2]))
+    seurat_integrated=seurat_SCT_integrate(seurat_doubleted.groupTuple(by: [0]))
 
 
     if (params.SCENIC == "run"){   
@@ -109,16 +109,23 @@ workflow {
 	ctds1=create_cistarget_motif_databases(
 		TFs.combine(updownstreamed).combine(channel.of(1..250))
 		)
-    	ctds1_grouped=ctds1.groupTuple(by: 0)
+    	ctds1_grouped=ctds1.groupTuple()
   
     	ctds2=combine_partials(ctds1_grouped) 
-/*
-    	seurat_counts=seurat_count_matrix(seurat_integrated.combine(modified_motifs))   
+        seurat_counts=seurat_count_matrix(
+		seurat_integrated
+			.combine(modified_motifs, by: 0)
+		)
+
     	grned=grn(seurat_counts)
-    	ctxed=ctx(grn.combine(ctds2, by: 0))
+ 
+    	ctxed=ctx(grned.combine(ctds2, by: 0))
     	aucelled=aucell(ctxed)
-*/
+
 	}
+  //  if (params.popgen == "run"){
+//	popgen(seurat_integrated.combine)
+	//}
    
 }
 

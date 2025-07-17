@@ -1,15 +1,18 @@
+args = commandArgs(trailingOnly=TRUE)
+
 library(Seurat)
 library(dplyr)
 species = args[1]
 obj_path = args[2]
 
 load(obj_path)
+print(1)
 DefaultAssay(seurat_integrated) <- "RNA"
 seurat_integrated <- JoinLayers(seurat_integrated)
 counts <- seurat_integrated@assays$RNA$counts %>% 
   as.data.frame()
-
-write.table(counts, paste0("data/", species, "_seurat_counts.csv"), sep = ',', row.names = T, col.names = T, quote = F)
+print(2)
+write.table(counts, paste0(species, "_seurat_counts.csv"), sep = ',', row.names = T, col.names = T, quote = F)
 
 sp_motif_data <- read.table(args[3], sep = '\t', header = T, comment.char="") 
 

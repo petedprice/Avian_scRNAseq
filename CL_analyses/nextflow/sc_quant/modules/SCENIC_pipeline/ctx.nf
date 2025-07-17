@@ -1,33 +1,34 @@
 
 process ctx {
 
-    cpus { 8 * task.attempt }
-    errorStrategy 'retry'
-    maxRetries 6
-    memory { 84.GB * task.attempt }    
-    
+    cpus { 60 * task.attempt }
+    memory { 1999.GB * task.attempt }
+    time = '48h'
+
     label 'SCENIC'
 
-    publishDir 'seurat_objects', mode: 'copy', overwrite: true, pattern: '*RData'
+    publishDir 'regulons', mode: 'copy', overwrite: true, pattern: '*regulons.csv'
 
     input: 
-    tuple val(species),  val(stage), val(sex), file("${species}_${sex}_${stage}_expr_mat.adjacencies.tsv"), file("${species}_motifs.tbl"), file("${species}_${sex}_${stage}_counts.csv"), ${species}_motif_db.regions_vs_motifs.rankings.feather
+    tuple val(species),  file("${species}_expr_mat.adjacencies.tsv"), file("${species}_motifs.tbl"), file("${species}_counts.csv"), file("combined")
 
     output:
-    tuple val(species),  val(stage), val(sex), file("${species}_${sex}_${stage}_regulons.csv"), file("${species}_${sex}_${stage}_counts.csv")
+    tuple val(species),  file("${species}_regulons.csv"), file("${species}_counts.csv")
     
     script:
 
     """
     #!/bin/bash
+    cp combined/${species}_motif_db.regions_vs_motifs.rankings.feather .
+
     pyscenic ctx \
-	${species}_${sex}_${stage}_expr_mat.adjacencies.tsv
+	${species}_expr_mat.adjacencies.tsv \
         ${species}_motif_db.regions_vs_motifs.rankings.feather \
         --annotations_fname ${species}_motifs.tbl \
-        --output ${species}_${sex}_${stage}_regulons.csv \
-        --num_workers ${nbr_threads} \
+        --output ${species}_regulons.csv \
+        --num_workers $task.cpus \
         -t \
-       --expression_mtx_fname /data/${species}_seurat_counts.csv 
+       --expression_mtx_fname ${species}_counts.csv 
 
     """
 }

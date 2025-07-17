@@ -13,7 +13,7 @@ process seurat_doublet {
     tuple val(species), val(sample), val(stage), val(sex), file("filtered_seurat.RData"), file("${sample}_initial_QC_plots")
 
     output:
-    tuple val(species),  val(stage), val(sex), file("*doublet_seurat.RData")
+    tuple val(species),  file("*doublet_seurat.RData")
 
     script:
     """    
