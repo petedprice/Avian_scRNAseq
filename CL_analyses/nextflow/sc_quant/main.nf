@@ -7,6 +7,7 @@ include { cellranger_mkref } from './modules/cellranger/cellranger_mkref.nf'
 include { cellranger_count } from './modules/cellranger/cellranger_count.nf'
 
 include { seurat_filter } from './modules/seurat/seurat_filter.nf'
+include { seurat_soupX } from './modules/seurat/seurat_soupX.nf'
 include { seurat_doublet } from './modules/seurat/seurat_doublet.nf'
 include { seurat_SCT_integrate } from './modules/seurat/seurat_SCT_integrate.nf'
 include { seurat_count_matrix } from './modules/seurat/seurat_count_matrix.nf'
@@ -66,15 +67,20 @@ workflow {
 
     //READ IN CELLRANGER DATA AND FILTER SEURAT OBJECTS
     seurat_filtered=seurat_filter(sex_stage_ch)    
+    
+
+    //REMOVE THE SOUP 
+    seurat_soupXed=seurat_soupX(seurat_filtered)
+
 
     //REMOVE DOUBLETS 
-    seurat_doubleted=seurat_doublet(seurat_filtered)
+    seurat_doubleted=seurat_doublet(seurat_soupXed)
 
     //INTEGRATE
-    //seurat_integrated=seurat_SCT_integrate(seurat_doubleted.groupTuple(by: [0,1,2]))
-    seurat_integrated=seurat_SCT_integrate(seurat_doubleted.groupTuple(by: [0]))
+    seurat_integrated=seurat_SCT_integrate(seurat_doubleted.groupTuple(by: [0,1,2]))
+    //seurat_integrated=seurat_SCT_integrate(seurat_doubleted.groupTuple(by: [0]))
 
-
+/*
     if (params.SCENIC == "run"){   
 	    // SCENIC WORKFLOW //
 
@@ -112,6 +118,7 @@ workflow {
     	ctds1_grouped=ctds1.groupTuple()
   
     	ctds2=combine_partials(ctds1_grouped) 
+
         seurat_counts=seurat_count_matrix(
 		seurat_integrated
 			.combine(modified_motifs, by: 0)
@@ -123,10 +130,7 @@ workflow {
     	aucelled=aucell(ctxed)
 
 	}
-  //  if (params.popgen == "run"){
-//	popgen(seurat_integrated.combine)
-	//}
-   
+*/
 }
 
 

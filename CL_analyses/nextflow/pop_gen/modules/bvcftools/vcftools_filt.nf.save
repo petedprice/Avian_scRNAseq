@@ -1,0 +1,52 @@
+process vcftools_filt {
+
+    label 'vcftools'
+    errorStrategy 'retry'
+
+    time = '8h'
+    cpus { 4 * task.attempt }
+    memory { 64.GB * task.attempt }
+
+    publishDir 'filtered_vcfs_stringent', mode: 'copy', overwrite: true, pattern: '*recode.vcf'
+
+    input:
+    tuple val(contig), file("${contig}_genotyped_allsites_VF.vcf.gz"), file(degen)
+
+    output:
+    tuple val(contig), file("${contig}_final.recode.vcf"), env(bed_label)
+
+    script:
+    """
+    #!/bin/bash
+
+    bed_label=\$(basename "\$(readlink -f ${degen})" .bed)
+
+    cat ${params.gff} | awk '{if (\$3 == "gene") print \$0;}' | grep ${contig} | cut -f1,4,5 > genes.bed
+
+    cat $degen | grep $contig > tmp.degen.bed
+
+
+    vcftools \
+	--gzvcf ${contig}_genotyped_allsites_VF.vcf.gz \
+	--out tmp1 \
+	--bed genes.bed \
+	--recode
+
+    vcftools \
+	--vcf tmp1.recode.vcf \
+	--out tmp2 \
+	--minGQ 30 \
+        --minDP 10 \
+        --recode \
+        --remove-indels
+
+    vcftools \
+	--vcf tmp2.recode.vcf \
+	--out ${contig}_final \
+	--bed tmp.degen.bed \
+	--recode
+
+
+    """
+}
+

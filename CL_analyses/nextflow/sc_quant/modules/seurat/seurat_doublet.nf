@@ -7,20 +7,18 @@ process seurat_doublet {
     
     label 'seurat'
 
-    //publishDir 'seurat_objects', mode: 'copy', overwrite: true, pattern: '*doublet_seurat.RData'
-
     input: 
-    tuple val(species), val(sample), val(stage), val(sex), file("filtered_seurat.RData"), file("${sample}_initial_QC_plots")
+    tuple val(species), val(sample), val(stage), val(sex), file("seurat_soupX.RData")
 
     output:
-    tuple val(species),  file("*doublet_seurat.RData")
+    tuple val(species),  val(stage), val(sex), file("${sample}_${species}_${sex}_${stage}_doublet_seurat.RData")
 
     script:
     """    
     #!/bin/bash
 
-    Rscript ${projectDir}/Rscripts/seurat/doublet_finder.R \
-	filtered_seurat.RData \
+    Rscript ${projectDir}/Rscripts/seurat/doublet_finder_souped.R \
+	seurat_soupX.RData \
 	. \
 	${task.cpus} \
 	${params.cellcycle_markers} \

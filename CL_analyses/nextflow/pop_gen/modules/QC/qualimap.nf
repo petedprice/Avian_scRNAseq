@@ -1,12 +1,12 @@
 process qualimap {
-    cpus = 1
-    memory = '4 GB'
-    time = '4h'
+    cpus = 16
+    memory = '64G'
+    time = '8h'
 
     label 'qualimap'
 
     input:
-    tuple file("${SRA}_sorted.bam"), file("${SRA}_sorted.bam.bai"), val(SRA)
+    tuple file("${sample}_sorted.bam"), file("${sample}_sorted.bam.bai"), val(sample)
 
     output:
     file("*_sorted_stats")
@@ -14,6 +14,6 @@ process qualimap {
     script:
     """
     #!/bin/bash
-    qualimap bamqc -bam ${SRA}_sorted.bam
+    qualimap bamqc -nt ${task.cpus} --java-mem-size=${task.memory} -bam ${sample}_sorted.bam
     """
 }

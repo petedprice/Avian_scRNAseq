@@ -1,0 +1,84 @@
+Jan-27 14:40:01.586 [main] DEBUG nextflow.cli.Launcher - $> nextflow run /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/main.nf --metadata /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/metadata_full.csv -resume
+Jan-27 14:40:01.691 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 22.04.0
+Jan-27 14:40:01.706 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/nextflow.config
+Jan-27 14:40:01.707 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/nextflow.config
+Jan-27 14:40:01.725 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+Jan-27 14:40:02.249 [main] INFO  nextflow.cli.CmdRun - Launching `/users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/main.nf` [astonishing_liskov] DSL2 - revision: 56bb4dbc47
+Jan-27 14:40:02.261 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/users/bi1pp/.nextflow/plugins; core-plugins: nf-amazon@1.7.1,nf-azure@0.13.1,nf-console@1.0.3,nf-ga4gh@1.0.3,nf-google@1.1.4,nf-sqldb@0.4.0,nf-tower@1.4.0
+Jan-27 14:40:02.263 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Jan-27 14:40:02.272 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Jan-27 14:40:02.273 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Jan-27 14:40:02.276 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+Jan-27 14:40:02.284 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Jan-27 14:40:02.326 [main] DEBUG nextflow.Session - Session uuid: d40080ae-ca3a-423f-9a2a-ceada6212839
+Jan-27 14:40:02.327 [main] DEBUG nextflow.Session - Run name: astonishing_liskov
+Jan-27 14:40:02.327 [main] DEBUG nextflow.Session - Executor pool size: 64
+Jan-27 14:40:02.381 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 22.04.0 build 5697
+  Created: 23-04-2022 18:00 UTC (19:00 BST)
+  System: Linux 3.10.0-1160.125.1.el7.x86_64
+  Runtime: Groovy 3.0.10 on OpenJDK 64-Bit Server VM 11.0.16+8
+  Encoding: UTF-8 (UTF-8)
+  Process: 19053@login2.pri.stanage.alces.network [10.10.7.2]
+  CPUs: 64 - Mem: 1007.2 GB (509.6 GB) - Swap: 7.9 GB (7.5 GB)
+Jan-27 14:40:02.434 [main] DEBUG nextflow.Session - Work-dir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/work [nfs]
+Jan-27 14:40:02.435 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/bin
+Jan-27 14:40:02.443 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Jan-27 14:40:02.453 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Jan-27 14:40:02.475 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Jan-27 14:40:02.486 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 65; maxThreads: 1000
+Jan-27 14:40:02.577 [main] DEBUG nextflow.Session - Session start invoked
+Jan-27 14:40:02.756 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Jan-27 14:40:03.042 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:sra_tools` matches labels `sra_tools` for process with name fasterq_dump
+Jan-27 14:40:03.046 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-27 14:40:03.046 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-27 14:40:03.052 [main] DEBUG nextflow.executor.Executor - [warm up] executor > slurm
+Jan-27 14:40:03.057 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'slurm' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+Jan-27 14:40:03.060 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'slurm' > queue-stat-interval: 1m
+Jan-27 14:40:03.113 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:fastqc` matches labels `fastqc` for process with name fastqc
+Jan-27 14:40:03.114 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-27 14:40:03.114 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-27 14:40:03.141 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:multiqc` matches labels `multiqc` for process with name multiqc
+Jan-27 14:40:03.142 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-27 14:40:03.142 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-27 14:40:03.146 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:trim` matches labels `trim` for process with name trimmomatic
+Jan-27 14:40:03.147 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Jan-27 14:40:03.147 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Jan-27 14:40:03.149 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: trimmomatic, fasterq_dump, fastqc, multiqc
+Jan-27 14:40:03.150 [main] DEBUG nextflow.Session - Ignite dataflow network (5)
+Jan-27 14:40:03.154 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > fasterq_dump
+Jan-27 14:40:03.154 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > fastqc
+Jan-27 14:40:03.155 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > multiqc
+Jan-27 14:40:03.156 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > trimmomatic
+Jan-27 14:40:03.157 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+Jan-27 14:40:03.158 [main] DEBUG nextflow.Session - Session await
+Jan-27 14:40:03.232 [Actor Thread 20] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/sra-tools:3.1.1--h4304569_2; path=/mnt/parscratch/users/bi1pp/Avian_pop_gen/sing/depot.galaxyproject.org-singularity-sra-tools-3.1.1--h4304569_2.img
+Jan-27 14:40:03.333 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process fasterq_dump (3) > jobId: 5106212; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/work/77/e027dfdcea585d089f5d09bbd671fb
+Jan-27 14:40:03.334 [Task submitter] INFO  nextflow.Session - [77/e027df] Submitted process > fasterq_dump (3)
+Jan-27 14:40:03.352 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process fasterq_dump (1) > jobId: 5106213; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/work/19/2305ba175c098fc26fb3b572c27dde
+Jan-27 14:40:03.352 [Task submitter] INFO  nextflow.Session - [19/2305ba] Submitted process > fasterq_dump (1)
+Jan-27 14:40:03.367 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process fasterq_dump (2) > jobId: 5106214; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/work/cc/e9b563a0c341f5eb8a1c7f075e048a
+Jan-27 14:40:03.367 [Task submitter] INFO  nextflow.Session - [cc/e9b563] Submitted process > fasterq_dump (2)
+Jan-27 14:40:07.846 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+Jan-27 14:40:07.855 [SIGINT handler] DEBUG nextflow.Session - The following nodes are still active:
+[process] fastqc
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] multiqc
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: *_fastqc
+  port 1: (cntrl) -     ; channel: $
+
+[process] trimmomatic
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+Jan-27 14:40:07.856 [main] DEBUG nextflow.Session - Session await > all process finished
+Jan-27 14:40:07.856 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Jan-27 14:40:07.861 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (3)
+Jan-27 14:40:07.877 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=3; runningCount=-3; retriesCount=0; abortedCount=3; succeedDuration=0ms; failedDuration=0ms; cachedDuration=0ms;loadCpus=-3; loadMemory=0; peakRunning=0; peakCpus=0; peakMemory=0; ]
+Jan-27 14:40:08.041 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Jan-27 14:40:08.049 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

@@ -8,6 +8,7 @@ include { paml_branch_tree } from './modules/paml_branch_tree.nf'
 
 include { get_refs } from './modules/get_refs.nf'
 include { longest_isoform } from './modules/longest_isoform.nf'
+include { longest_isoform_agat } from './modules/longest_isoform_agat.nf'
 
 include { orthofinder } from './modules/orthofinder.nf'
 include { ortho_cds } from './modules/ortho_cds.nf'
@@ -68,7 +69,7 @@ workflow {
     	seqs=get_refs(species_ch)
     }
 
-    longest=longest_isoform(seqs).collect()
+    longest=longest_isoform_agat(seqs).collect()
     orthofound=orthofinder(longest)
     of_cds=ortho_cds(orthofound)
 	.transpose()

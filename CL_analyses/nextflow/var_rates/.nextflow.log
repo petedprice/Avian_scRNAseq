@@ -1,0 +1,173 @@
+Dec-18 14:04:06.330 [main] DEBUG nextflow.cli.Launcher - $> nextflow run /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/main.nf --metadata /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/metadata_full.csv --tree /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/data/tree.txt --branch_trees /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/data/branch_trees -resume
+Dec-18 14:04:06.512 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 22.04.0
+Dec-18 14:04:06.551 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/nextflow.config
+Dec-18 14:04:06.551 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/nextflow.config
+Dec-18 14:04:06.597 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+Dec-18 14:04:08.002 [main] INFO  nextflow.cli.CmdRun - Launching `/users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/main.nf` [tiny_golick] DSL2 - revision: d30605bb52
+Dec-18 14:04:08.029 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/users/bi1pp/.nextflow/plugins; core-plugins: nf-amazon@1.7.1,nf-azure@0.13.1,nf-console@1.0.3,nf-ga4gh@1.0.3,nf-google@1.1.4,nf-sqldb@0.4.0,nf-tower@1.4.0
+Dec-18 14:04:08.032 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Dec-18 14:04:08.056 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Dec-18 14:04:08.057 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Dec-18 14:04:08.060 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+Dec-18 14:04:08.082 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Dec-18 14:04:08.165 [main] DEBUG nextflow.Session - Session uuid: d40080ae-ca3a-423f-9a2a-ceada6212839
+Dec-18 14:04:08.165 [main] DEBUG nextflow.Session - Run name: tiny_golick
+Dec-18 14:04:08.165 [main] DEBUG nextflow.Session - Executor pool size: 2
+Dec-18 14:04:08.226 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 22.04.0 build 5697
+  Created: 23-04-2022 18:00 UTC (19:00 BST)
+  System: Linux 3.10.0-1160.141.1.el7.x86_64
+  Runtime: Groovy 3.0.10 on OpenJDK 64-Bit Server VM 11.0.20+8
+  Encoding: UTF-8 (UTF-8)
+  Process: 61101@node001.pri.stanage.alces.network [10.10.1.1]
+  CPUs: 1 - Mem: 32 GB (31.8 GB) - Swap: 0 (0)
+Dec-18 14:04:08.302 [main] DEBUG nextflow.Session - Work-dir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work [nfs]
+Dec-18 14:04:08.303 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/bin
+Dec-18 14:04:08.311 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Dec-18 14:04:08.336 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Dec-18 14:04:08.373 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Dec-18 14:04:08.395 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 2; maxThreads: 1000
+Dec-18 14:04:08.758 [main] DEBUG nextflow.Session - Session start invoked
+Dec-18 14:04:09.451 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Dec-18 14:04:11.960 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:R` matches labels `R` for process with name paml_tree
+Dec-18 14:04:11.964 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:11.964 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:11.981 [main] DEBUG nextflow.executor.Executor - [warm up] executor > slurm
+Dec-18 14:04:11.987 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'slurm' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+Dec-18 14:04:12.010 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'slurm' > queue-stat-interval: 1m
+Dec-18 14:04:12.114 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:R` matches labels `R` for process with name paml_branch_tree
+Dec-18 14:04:12.115 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.116 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.161 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.162 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.182 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.182 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.192 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:python_orth` matches labels `python_orth` for process with name orthofinder
+Dec-18 14:04:12.206 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.206 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.213 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.213 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.233 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:R` matches labels `R` for process with name format_fastas
+Dec-18 14:04:12.242 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.242 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.252 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:prank` matches labels `prank` for process with name prank_allign
+Dec-18 14:04:12.253 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.253 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.271 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:R` matches labels `R` for process with name remove_gaps
+Dec-18 14:04:12.278 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.278 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.297 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:prank` matches labels `prank` for process with name prank_phy
+Dec-18 14:04:12.299 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.299 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.322 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:R` matches labels `R` for process with name mod0_paml
+Dec-18 14:04:12.324 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.324 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.346 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.346 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.358 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:R` matches labels `R` for process with name remove_Ns
+Dec-18 14:04:12.360 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.360 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.367 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:R` matches labels `R` for process with name branch_model
+Dec-18 14:04:12.381 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-18 14:04:12.382 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-18 14:04:12.388 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: remove_gaps, swamp_final, get_omega, prank_phy, swamp_test, orthofinder, paml_tree, branch_model, mod0_paml, m1avsm2a, ortho_cds, format_fastas, remove_Ns, comp_paml_models, prank_allign, paml_branch_tree, longest_isoform, get_refs
+Dec-18 14:04:12.388 [main] DEBUG nextflow.Session - Ignite dataflow network (16)
+Dec-18 14:04:12.406 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > paml_tree
+Dec-18 14:04:12.409 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > paml_branch_tree
+Dec-18 14:04:12.422 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > get_refs
+Dec-18 14:04:12.423 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > longest_isoform
+Dec-18 14:04:12.424 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > orthofinder
+Dec-18 14:04:12.431 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > ortho_cds
+Dec-18 14:04:12.444 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > format_fastas
+Dec-18 14:04:12.445 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > prank_allign
+Dec-18 14:04:12.445 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > remove_gaps
+Dec-18 14:04:12.458 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > prank_phy
+Dec-18 14:04:12.459 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > mod0_paml
+Dec-18 14:04:12.460 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > swamp_final
+Dec-18 14:04:12.478 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > remove_Ns
+Dec-18 14:04:12.494 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > branch_model
+Dec-18 14:04:12.495 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+Dec-18 14:04:12.495 [main] DEBUG nextflow.Session - Session await
+Dec-18 14:04:12.726 [Actor Thread 15] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=docker://rocker/tidyverse; path=/mnt/parscratch/users/bop20pp/Avian_scRNAseq/var_rates/sing/rocker-tidyverse.img
+Dec-18 14:04:12.970 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process paml_branch_tree > jobId: 8873092; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/c4/349f21ec4f8e93e49f6e05627d3cff
+Dec-18 14:04:12.971 [Task submitter] INFO  nextflow.Session - [c4/349f21] Submitted process > paml_branch_tree
+Dec-18 14:04:13.028 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process paml_tree > jobId: 8873093; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/39/b6cd86fb16678b9874a6b9c767c892
+Dec-18 14:04:13.028 [Task submitter] INFO  nextflow.Session - [39/b6cd86] Submitted process > paml_tree
+Dec-18 14:04:13.080 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process get_refs (2) > jobId: 8873094; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/8d/126227ada89c40e628401877806882
+Dec-18 14:04:13.081 [Task submitter] INFO  nextflow.Session - [8d/126227] Submitted process > get_refs (2)
+Dec-18 14:04:13.115 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process get_refs (3) > jobId: 8873095; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/24/e4fd3ba9334fa50216db237b997dd8
+Dec-18 14:04:13.115 [Task submitter] INFO  nextflow.Session - [24/e4fd3b] Submitted process > get_refs (3)
+Dec-18 14:04:13.149 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process get_refs (1) > jobId: 8873096; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/99/f41850ec6a9d5d833e7d3d43fbba9f
+Dec-18 14:04:13.149 [Task submitter] INFO  nextflow.Session - [99/f41850] Submitted process > get_refs (1)
+Dec-18 14:04:13.181 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process get_refs (4) > jobId: 8873097; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/2b/ca06492ef298a65b8dc70b8d8d3a82
+Dec-18 14:04:13.181 [Task submitter] INFO  nextflow.Session - [2b/ca0649] Submitted process > get_refs (4)
+Dec-18 14:04:52.008 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873094; id: 4; name: get_refs (2); status: COMPLETED; exit: 0; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/8d/126227ada89c40e628401877806882 started: 1766066657060; exited: 2025-12-18T14:04:38.185487Z; ]
+Dec-18 14:04:52.042 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873095; id: 5; name: get_refs (3); status: COMPLETED; exit: 1; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/24/e4fd3ba9334fa50216db237b997dd8 started: 1766066657062; exited: 2025-12-18T14:04:27.806441Z; ]
+Dec-18 14:04:52.046 [Task monitor] INFO  nextflow.processor.TaskProcessor - [24/e4fd3b] NOTE: Process `get_refs (3)` terminated with an error exit status (1) -- Error is ignored
+Dec-18 14:04:52.064 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873096; id: 3; name: get_refs (1); status: COMPLETED; exit: 1; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/99/f41850ec6a9d5d833e7d3d43fbba9f started: 1766066657063; exited: 2025-12-18T14:04:27.822441Z; ]
+Dec-18 14:04:52.064 [Task monitor] INFO  nextflow.processor.TaskProcessor - [99/f41850] NOTE: Process `get_refs (1)` terminated with an error exit status (1) -- Error is ignored
+Dec-18 14:04:52.069 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873097; id: 6; name: get_refs (4); status: COMPLETED; exit: 0; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/2b/ca06492ef298a65b8dc70b8d8d3a82 started: 1766066657064; exited: 2025-12-18T14:04:37.070482Z; ]
+Dec-18 14:04:52.110 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process longest_isoform (1) > jobId: 8873101; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/1d/bc29fd98f840b1e1ee9d1e5d01d417
+Dec-18 14:04:52.110 [Task submitter] INFO  nextflow.Session - [1d/bc29fd] Submitted process > longest_isoform (1)
+Dec-18 14:04:52.152 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process longest_isoform (2) > jobId: 8873102; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/37/d2bc3cf99e286e1424d3fce25e69ac
+Dec-18 14:04:52.152 [Task submitter] INFO  nextflow.Session - [37/d2bc3c] Submitted process > longest_isoform (2)
+Dec-18 14:04:57.006 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873093; id: 2; name: paml_tree; status: COMPLETED; exit: 0; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/39/b6cd86fb16678b9874a6b9c767c892 started: 1766066657058; exited: 2025-12-18T14:04:52.38555Z; ]
+Dec-18 14:04:57.015 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873102; id: 8; name: longest_isoform (2); status: COMPLETED; exit: 0; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/37/d2bc3cf99e286e1424d3fce25e69ac started: 1766066697014; exited: 2025-12-18T14:04:56.662569Z; ]
+Dec-18 14:05:27.008 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873092; id: 1; name: paml_branch_tree; status: COMPLETED; exit: 0; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/c4/349f21ec4f8e93e49f6e05627d3cff started: 1766066657012; exited: 2025-12-18T14:04:59.540582Z; ]
+Dec-18 14:05:27.018 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 8873101; id: 7; name: longest_isoform (1); status: COMPLETED; exit: 0; error: -; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/1d/bc29fd98f840b1e1ee9d1e5d01d417 started: 1766066697013; exited: 2025-12-18T14:04:57.440573Z; ]
+Dec-18 14:05:27.063 [Actor Thread 11] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=docker://jupyter/scipy-notebook:latest; path=/mnt/parscratch/users/bop20pp/Avian_scRNAseq/var_rates/sing/jupyter-scipy-notebook-latest.img
+Dec-18 14:05:27.129 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process orthofinder > jobId: 8873104; workDir: /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/var_rates/work/40/889459bbb1e0019778987114fccd8f
+Dec-18 14:05:27.129 [Task submitter] INFO  nextflow.Session - [40/889459] Submitted process > orthofinder
+Dec-18 14:05:33.151 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+Dec-18 14:05:33.190 [SIGINT handler] DEBUG nextflow.Session - The following nodes are still active:
+[process] ortho_cds
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] format_fastas
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] prank_allign
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] remove_gaps
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] prank_phy
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] mod0_paml
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] swamp_final
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] remove_Ns
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] branch_model
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+Dec-18 14:05:33.193 [main] DEBUG nextflow.Session - Session await > all process finished
+Dec-18 14:05:33.193 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Dec-18 14:05:33.197 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (1)
+Dec-18 14:05:33.244 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=6; failedCount=2; ignoredCount=2; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=1; succeedDuration=5m; failedDuration=1m 10s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=6; peakCpus=9; peakMemory=260 GB; ]
+Dec-18 14:05:33.405 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Dec-18 14:05:33.419 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

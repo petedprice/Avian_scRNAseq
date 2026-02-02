@@ -1,0 +1,1 @@
+(((Cygnus_olor,Anser_cygnoides),Anas_platyrhynchos#1),Numida_meleagris);

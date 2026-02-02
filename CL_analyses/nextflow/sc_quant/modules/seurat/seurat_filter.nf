@@ -13,7 +13,7 @@ process seurat_filter {
     tuple val(species), val(sample), val(stage), val(sex), file("${species}_mt_genes.txt"), file("${sample}_crdata")
 
     output:
-    tuple val(species), val(sample), val(stage), val(sex), file("filtered_seurat.RData"), file("${sample}_initial_QC_plots"), file("${sample}_web_summary.html")
+    tuple val(species), val(sample), val(stage), val(sex), file("filtered_seurat.RData"), file("${sample}_crdata"), file("${sample}_initial_QC_plots"), file("${sample}_web_summary.html")
 
     
     script:

@@ -1,0 +1,17 @@
+BootStrap: docker
+From: mambaorg/micromamba:1.5.10-noble
+%files
+    /users/bi1pp/personal_git/Avian_scRNAseq/CL_analyses/nextflow/pop_gen/images/pixy.yml /scratch/conda.yml
+%post
+    micromamba install -y -n base -f /scratch/conda.yml
+    micromamba install -y -n base conda-forge::procps-ng
+    micromamba env export --name base --explicit > environment.lock
+    echo ">> CONDA_LOCK_START"
+    cat environment.lock
+    echo "<< CONDA_LOCK_END"
+    micromamba clean -a -y
+%environment
+    export PATH="$MAMBA_ROOT_PREFIX/bin:$PATH"
+%runscript
+    # Default command when the container is run
+    /bin/bash

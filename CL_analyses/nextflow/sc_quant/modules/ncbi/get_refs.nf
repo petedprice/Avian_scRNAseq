@@ -16,7 +16,9 @@ process get_refs {
     echo $species
     echo $ref
     rsync -t -v rsync://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_refseq.txt ./
-    grep -E ${ref} assembly_summary_refseq.txt | cut -f 20 > ftp_links.txt
+    wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/assembly_summary_refseq_historical.txt ./
+    grep -E ${ref} assembly_summary_refseq_historical.txt | cut -f 20 > ftp_links.txt
+   grep -E ${ref} assembly_summary_refseq.txt | cut -f 20 >> ftp_links.txt
     awk 'BEGIN{FS=OFS="/";filesuffix="genomic.gtf.gz"}{ftpdir=\$0;asm=\$10;file=asm"_"filesuffix;print "rsync -t -v "ftpdir,file" ./"}' ftp_links.txt | sed 's/https/rsync/g' > download_gtf_files.sh
     awk 'BEGIN{FS=OFS="/";filesuffix="genomic.fna.gz"}{ftpdir=\$0;asm=\$10;file=asm"_"filesuffix;print "rsync -t -v "ftpdir,file" ./"}' ftp_links.txt | sed 's/https/rsync/g' > download_genome_files.sh
 

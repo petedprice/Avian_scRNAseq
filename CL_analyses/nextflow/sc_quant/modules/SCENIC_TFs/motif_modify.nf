@@ -1,6 +1,6 @@
 process motif_modify {
-    cpus = 1
-    memory = '4 GB'
+    cpus = 8
+    memory = '64 GB'
     time = '4h'
 
     label 'tidyverse'

@@ -1,0 +1,34 @@
+Bootstrap: docker
+From: mambaorg/micromamba:latest
+
+%labels
+    Author YourName
+    Software pixy
+    Version 2.0.0
+
+%post
+    echo "Configuring micromamba..."
+
+    micromamba create -y -n pixy \
+        -c conda-forge \
+        -c bioconda \
+        python=3.11 \
+        pixy \
+        htslib \
+        samtools=1.21
+
+    micromamba clean -a -y
+
+%environment
+    export PATH=/opt/conda/envs/pixy/bin:$PATH
+    export LC_ALL=C
+    export LANG=C
+
+
+%runscript
+    # Default command when the container is run
+    /bin/bash
+
+%help
+    pixy container (Python 3.11)
+

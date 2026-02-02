@@ -1,24 +1,24 @@
 process bwa {
-    cpus = 1
-    memory = '4 GB'
-    time = '4h'
+    cpus = 32
+    memory = '64 GB'
+    time = '12h'
 
     label 'bwa'
 
     input:
-    tuple file("${SRA}_trimmed.fastq"), val(SRA)
+    tuple val(sample), file("${sample}_trim_reads")
 
     output:
-    tuple file("${SRA}.sam"), val(SRA)
-
+    tuple val(sample), file("${sample}.sam")
     
     script:
     """
     #!/bin/bash
-    ${projectDir}/software/bwa/bwa mem -M -t 16 \
+    ${projectDir}/software/bwa/bwa mem -M -t ${task.cpus} \
 	${params.fasta} \
-	${SRA}_trimmed.fastq \
-	> ${SRA}.sam
+	${sample}_trim_reads/${sample}_R1_paired.fastq.gz \
+	${sample}_trim_reads/${sample}_R2_paired.fastq.gz \
+	> ${sample}.sam
 
 
     """

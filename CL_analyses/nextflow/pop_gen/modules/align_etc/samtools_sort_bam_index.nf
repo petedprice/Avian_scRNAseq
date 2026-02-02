@@ -1,21 +1,20 @@
 process samtools_sort_bam_index {
-    cpus = 1
-    memory = '4 GB'
+    cpus = 16
+    memory = '64 GB'
     time = '4h'
 
     label 'samtools'
 
     input:
-    tuple file("${SRA}.sam"), val(SRA)
+    tuple val(sample), file("${sample}.sam")
 
     output:
-    tuple file("${SRA}_sorted.bam"), file("${SRA}_sorted.bam.bai"), val(SRA)
+    tuple file("${sample}_sorted.bam"), file("${sample}_sorted.bam.bai"), val(sample)
     
     script:
     """
     #!/bin/bash
-    samtools view -b ${SRA}.sam | samtools sort -o ${SRA}_sorted.bam
-    samtools index ${SRA}_sorted.bam
-
+    samtools view -b ${sample}.sam | samtools sort -o ${sample}_sorted.bam
+    samtools index ${sample}_sorted.bam
     """
 }

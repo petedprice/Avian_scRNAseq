@@ -12,7 +12,7 @@ library(parallel)
 
 ###### SETTING UP INPUT COMMANDS ----
 args = commandArgs(trailingOnly=TRUE)
-load(args[1]) # path to filtered seurat RData
+load(args[1]) # path to soupX seurat RData
 output_path <- args[2]
 threads = as.numeric(args[3])-2
 samples="all"

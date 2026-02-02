@@ -1,6 +1,6 @@
 process seurat_SCT_integrate {
 
-    cpus { 8 * task.attempt }
+    cpus { 32 * task.attempt }
     errorStrategy 'retry'
     maxRetries 6
     memory { 256.GB * task.attempt }    
@@ -10,21 +10,23 @@ process seurat_SCT_integrate {
     publishDir 'seurat_objects', mode: 'copy', overwrite: true, pattern: '*RData'
 
     input: 
-    tuple val(species), file("doublet_seurat.RData")
+    tuple val(species),  val(stage), val(sex), file("${sample}_${species}_${sex}_${stage}_doublet_seurat.RData")
 
     output:
-    tuple val(species),  file("${species}_integrated_seurat.RData")
+    tuple val(species),  val(stage), val(sex), file("${species}_${sex}_${stage}_integrated_seurat.RData")
 
     script:
     """
     #!/bin/bash
     echo ${task.memory}
+
     Rscript ${projectDir}/Rscripts/seurat/SCT_integrate.R \
 	. \
 	${params.cellcycle_markers}
 
  	
-    mv outdata/integrated_seurat.RData ${species}_integrated_seurat.RData
+    mv outdata/integrated_seurat.RData ${species}_${sex}_${stage}_integrated_seurat.RData
+
 
 
     """

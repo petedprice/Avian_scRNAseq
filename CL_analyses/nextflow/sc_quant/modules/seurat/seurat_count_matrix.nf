@@ -10,10 +10,10 @@ process seurat_count_matrix {
     publishDir 'seurat_objects', mode: 'copy', overwrite: true, pattern: '*RData'
 
     input:
-    tuple val(species), file("${species}_integrated_seurat.RData"), file("${species}_motifs.tbl")
+    tuple val(species),  val(stage), val(sex), file("${species}_${sex}_${stage}_integrated_seurat.RData"), file("${species}_motifs.tbl")
 
     output:
-    tuple val(species), file("${species}_counts.csv"), file("${species}_mm_tfs.txt"), file("${species}_motifs.tbl")
+    tuple val(species),  val(stage), val(sex), file("${species}_${sex}_${stage}_counts.csv"), file("${species}_${sex}_${stage}_mm_tfs.txt"), file("${species}_motifs.tbl")
 
     script:
 
@@ -22,11 +22,12 @@ process seurat_count_matrix {
     echo ${task.memory}
     Rscript ${projectDir}/Rscripts/seurat/seurat_count_matrix.R \
         ${species} \
-        ${species}_integrated_seurat.RData \
+        ${species}_${sex}_${stage}_integrated_seurat.RData \
         ${species}_motifs.tbl \
         ${params.celltype_matrix}
 
-    mv ${species}_seurat_counts.csv ${species}_counts.csv
+    mv ${species}_seurat_counts.csv ${species}_${sex}_${stage}_counts.csv
+    mv ${species}_mm_tfs.txt ${species}_${sex}_${stage}_mm_tfs.txt
 
     """
 }
